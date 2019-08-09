@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.enzobnl.scalablememoizer</groupId>
+    <artifactId>scalablememoizer</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.1.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+                <version>2.0.0</version>
+<!--                &lt;!&ndash; Note config is repeated in surefire config &ndash;&gt;-->
+<!--                <configuration>-->
+<!--                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>-->
+<!--                    <junitxml>.</junitxml>-->
+<!--                    <filereports>SparkTestSuite.txt</filereports>-->
+<!--                    <argLine>-ea -Xmx4g -Xss4m -XX:ReservedCodeCacheSize=${CodeCacheSize}</argLine>-->
+<!--                    <stderr/>-->
+<!--                    <environmentVariables>-->
+<!--                        &lt;!&ndash;-->
+<!--                          Setting SPARK_DIST_CLASSPATH is a simple way to make sure any child processes-->
+<!--                          launched by the tests have access to the correct test-time classpath.-->
+<!--                        &ndash;&gt;-->
+<!--                        <SPARK_DIST_CLASSPATH>${test_classpath}</SPARK_DIST_CLASSPATH>-->
+<!--                        <SPARK_PREPEND_CLASSES>1</SPARK_PREPEND_CLASSES>-->
+<!--                        <SPARK_SCALA_VERSION>${scala.binary.version}</SPARK_SCALA_VERSION>-->
+<!--                        <SPARK_TESTING>1</SPARK_TESTING>-->
+<!--                        <JAVA_HOME>${test.java.home}</JAVA_HOME>-->
+<!--                    </environmentVariables>-->
+<!--                    <systemProperties>-->
+<!--                        <log4j.configuration>file:src/test/resources/log4j.properties</log4j.configuration>-->
+<!--                        <derby.system.durability>test</derby.system.durability>-->
+<!--                        <java.awt.headless>true</java.awt.headless>-->
+<!--                        <java.io.tmpdir>${project.build.directory}/tmp</java.io.tmpdir>-->
+<!--                        <spark.test.home>${spark.test.home}</spark.test.home>-->
+<!--                        <spark.testing>1</spark.testing>-->
+<!--                        <spark.ui.enabled>false</spark.ui.enabled>-->
+<!--                        <spark.ui.showConsoleProgress>false</spark.ui.showConsoleProgress>-->
+<!--                        <spark.unsafe.exceptionOnMemoryLeak>true</spark.unsafe.exceptionOnMemoryLeak>-->
+<!--                        &lt;!&ndash; Needed by sql/hive tests. &ndash;&gt;-->
+<!--                        <test.src.tables>__not_used__</test.src.tables>-->
+<!--                    </systemProperties>-->
+<!--                    <tagsToExclude>${test.exclude.tags}</tagsToExclude>-->
+<!--                    <tagsToInclude>${test.include.tags}</tagsToInclude>-->
+<!--                </configuration>-->
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+    <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-mllib -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_2.11</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.scala-lang/scala-library -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.vegas-viz/vegas-spark -->
+        <dependency>
+            <groupId>org.vegas-viz</groupId>
+            <artifactId>vegas-spark_2.11</artifactId>
+            <version>0.3.11</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.scalatest/scalatest -->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.11</artifactId>
+            <version>3.2.0-SNAP10</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- TY JACEK https://github.com/scalatest/scalatest/issues/1112-->
+        <!-- https://mvnrepository.com/artifact/org.scalacheck/scalacheck -->
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_2.11</artifactId>
+            <version>1.14.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.blemale</groupId>
+            <artifactId>scaffeine_2.11</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.ignite/ignite-core -->
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-core</artifactId>
+            <version>2.7.5</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.scalaz/scalaz-core -->
+        <dependency>
+            <groupId>org.scalaz</groupId>
+            <artifactId>scalaz-core_2.11</artifactId>
+            <version>7.3.0-M30</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
