@@ -1,10 +1,10 @@
 package com.enzobnl.scalablememoizer.core.memo
 
-import com.enzobnl.scalablememoizer.core.cache.{GettableCache, MemoCache, Notifiable}
+import com.enzobnl.scalablememoizer.core.cache.{GettableCache, Notifiable}
 
 
 class Memo(memoCache: GettableCache with Notifiable) extends MemoMixin {
-  override def apply[I, R](f: I => R): I => R = {
+  override def apply[I, R](f: I => R, accessCache: Option[I => R]=None): I => R = {
     memoCache.notifyDependencyStart()
 
     new (I => R){
@@ -21,7 +21,7 @@ class Memo(memoCache: GettableCache with Notifiable) extends MemoMixin {
     }
   }
 
-  override def apply[I1, I2, R](f: (I1, I2) => R): (I1, I2) => R = {
+  override def apply[I1, I2, R](f: (I1, I2) => R, accessCache: Option[(I1, I2) => R]=None): (I1, I2) => R = {
     memoCache.notifyDependencyStart()
 
     new ((I1, I2) => R){

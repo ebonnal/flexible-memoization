@@ -8,6 +8,23 @@ import org.apache.ignite.cache.eviction.sorted.SortedEvictionPolicyFactory
 import org.apache.ignite.configuration._
 import org.apache.ignite.{Ignite, IgniteCache, Ignition}
 
+object OnHeapEvictionPolicy extends Enumeration {
+  type OnHeapEvictionPolicy = Value
+  /**
+    * Evicts least recently used entry
+    */
+  val LRU,
+
+  /**
+    * Evicts oldest entry in the cache
+    */
+  FIFO,
+
+  /**
+    * Evicts entry with smaller value (can use user comparison func)
+    */
+  SORTED = Value
+}
 
 class IgniteAdapter(ignite: Ignite, cacheName: String) extends MemoCache {
   def this(icf: IgniteConfiguration, cacheName: String) = this(Ignition.start(icf), cacheName)
