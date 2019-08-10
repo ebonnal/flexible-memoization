@@ -53,4 +53,5 @@ class GeneralSuite extends FlatSpec{
     )
     spark.stop()
   }
+  System.gc()
 }

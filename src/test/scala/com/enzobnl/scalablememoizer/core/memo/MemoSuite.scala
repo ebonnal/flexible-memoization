@@ -34,13 +34,21 @@ class MemoSuite extends FlatSpec {
     for (i <- 1 to 10) memoized3(i % 3)
     assert((memoCacheMap.misses, memoCacheMap.hits) == (3, 17)) // 3,17
   }
-  "cache access condition" should "give 20 misses and 0 hits" in {
+  "cache access condition (I1, I2) => R" should "give consistent hits and misses" in {
     val cache = new MapMemoCacheBuilder().build()
-    val f = (i: Int, j: Int) => Math.log(i*j)
+    val f = (i: Int, j: Int) => Math.log(i * j)
     val condition = (i: Int, j: Int) => i == j
     val memoized = new Memo(cache)(f, condition)
-    for(i <- 1 to 20; j <- 1 to 20) memoized(i, j)
-    println(cache.getHitsAndMisses._2 == 20)
+    for (i <- 1 to 20; j <- 1 to 20) memoized(i, j)
+    assert(cache.getHitsAndMisses._2 == 20)
+  }
+  "cache access condition on I => R" should "give consistent hits and misses" in {
+    val cache = new MapMemoCacheBuilder().build()
+    val f = (i: Int) => Math.log(i)
+    val condition = (i: Int) => i > 10
+    val memoized = new Memo(cache)(f, condition)
+    (1 to 20).map(memoized)
+    assert(cache.getHitsAndMisses._2 == 10)
   }
   var i = 0
 
