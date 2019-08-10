@@ -1,21 +1,32 @@
 package com.enzobnl.scalablememoizer.core.cache
 
-trait Notifiable {
-  def notifyDependencyStart(): Unit = ()
 
-  def notifyDependencyEnd(): Unit = ()
-}
-
-trait Closable {
-  def close(): Unit = ()
-}
-
-trait GettableCache {
+trait Gettable {
   def getOrElseUpdate(key: Long, value: => Any): Any
 }
 
-trait HitCounter{
-  def getHitsMisses: (Long, Long)
+trait ClosableMixin {
+  def close(): Unit = ()
+}
+
+trait NotifiableMixin extends ClosableMixin {
+  private var nSubjects: Int = 0
+
+  def notifyDependencyStart(): Unit = nSubjects += 1
+
+  def notifyDependencyEnd(): Unit = {
+    nSubjects -= 1
+    tryToClose()
+  }
+
+  def tryToClose(): Unit = if (nSubjects == 0) close()
+}
+
+trait HitCounterMixin {
+  protected[scalablememoizer] var hits = 0L
+  protected[scalablememoizer] var misses = 0L
+
+  def getHitsMisses: (Long, Long) = (hits, misses)
 }
 
 /** Base trait for memoization caches
@@ -24,20 +35,8 @@ trait HitCounter{
   * notifyDependencyEnd methods. Memo is charged to register it as
   * member of memoized functions.
   */
-trait MemoCache extends Closable with Notifiable with GettableCache with HitCounter{
-  protected[scalablememoizer] var hits = 0L
-  protected[scalablememoizer] var misses = 0L
-  private var nSubjects: Int = 0
+trait MemoCache extends Gettable with NotifiableMixin with HitCounterMixin
 
-  override def getHitsMisses: (Long, Long) = (hits, misses)
-
-  //   MESSAGES FROM SUBJECTS
-  override def notifyDependencyStart(): Unit = nSubjects += 1
-
-  override def notifyDependencyEnd(): Unit = {
-    nSubjects -= 1
-    tryToClose()
-  }
-  def tryToClose(): Unit = if (nSubjects == 0) close()
+trait MemoCacheBuilder{
+  def build(): MemoCache
 }
-

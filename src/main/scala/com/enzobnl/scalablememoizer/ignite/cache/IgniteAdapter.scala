@@ -1,15 +1,15 @@
 package com.enzobnl.scalablememoizer.ignite.cache
 
-import com.enzobnl.scalablememoizer.core.cache.{MemoCache}
-import com.enzobnl.scalablememoizer.ignite.cache.OnHeapEvictionPolicy.OnHeapEvictionPolicy
+import com.enzobnl.scalablememoizer.core.cache.{MemoCache, MemoCacheBuilder}
+import com.enzobnl.scalablememoizer.ignite.cache.OnHeapEviction.OnHeapEviction
 import org.apache.ignite.cache.eviction.fifo.FifoEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.lru.LruEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.sorted.SortedEvictionPolicyFactory
 import org.apache.ignite.configuration._
 import org.apache.ignite.{Ignite, IgniteCache, Ignition}
 
-object OnHeapEvictionPolicy extends Enumeration {
-  type OnHeapEvictionPolicy = Value
+object OnHeapEviction extends Enumeration {
+  type OnHeapEviction = Value
   /**
     * Evicts least recently used entry
     */
@@ -26,7 +26,7 @@ object OnHeapEvictionPolicy extends Enumeration {
   SORTED = Value
 }
 
-class IgniteAdapter(ignite: Ignite, cacheName: String) extends MemoCache {
+private class IgniteAdapter(ignite: Ignite, cacheName: String) extends MemoCache {
   def this(icf: IgniteConfiguration, cacheName: String) = this(Ignition.start(icf), cacheName)
 
   val igniteCache: IgniteCache[Long, Any] = ignite.getOrCreateCache[Long, Any](cacheName)
@@ -43,40 +43,41 @@ class IgniteAdapter(ignite: Ignite, cacheName: String) extends MemoCache {
         v
     }
   }
+
   override def close(): Unit = {
     ignite.close()
   }
 }
 
-class IgniteAdapterBuilder private
-    (onHeapMaxSize: Option[Long],
-     offHeapMaxSize: Option[Long],
-     onHeapEvictionPolicy: OnHeapEvictionPolicy) {
+class IgniteMemoCacheBuilder private
+(onHeapMaxSize: Option[Long],
+ offHeapMaxSize: Option[Long],
+ onHeapEvictionPolicy: OnHeapEviction) extends MemoCacheBuilder {
 
-  def this() = this(Some(1L * 1024 * 1024 * 1024), None, OnHeapEvictionPolicy.LRU)
+  def this() = this(Some(1L * 1024 * 1024 * 1024), None, OnHeapEviction.LRU)
 
   val cacheName = s"cache$hashCode"
   val storageRegionName = s"region$hashCode"
   val igniteInstanceName = s"instance$hashCode"
 
-  def withOnHeapMaxSize(size: Option[Long]): IgniteAdapterBuilder = {
-    new IgniteAdapterBuilder(size, offHeapMaxSize, onHeapEvictionPolicy)
+  def withOnHeapMaxSize(size: Option[Long]): IgniteMemoCacheBuilder = {
+    new IgniteMemoCacheBuilder(size, offHeapMaxSize, onHeapEvictionPolicy)
   }
 
-  def withOffHeapMaxSize(size: Option[Long]): IgniteAdapterBuilder = {
-    new IgniteAdapterBuilder(onHeapMaxSize, size, onHeapEvictionPolicy)
+  def withOffHeapMaxSize(size: Option[Long]): IgniteMemoCacheBuilder = {
+    new IgniteMemoCacheBuilder(onHeapMaxSize, size, onHeapEvictionPolicy)
   }
 
-  def withEviction(eviction: OnHeapEvictionPolicy): IgniteAdapterBuilder = {
-    new IgniteAdapterBuilder(onHeapMaxSize, offHeapMaxSize, eviction)
+  def withEviction(eviction: OnHeapEviction): IgniteMemoCacheBuilder = {
+    new IgniteMemoCacheBuilder(onHeapMaxSize, offHeapMaxSize, eviction)
   }
 
-  def build(): IgniteAdapter = {
+  override def build(): MemoCache = {
 
     // Creating a new data region.
     val regionCfg = new DataRegionConfiguration()
       .setName(this.storageRegionName)
-      .setInitialSize(IgniteAdapterBuilder.OFF_HEAP_INITIAL_SIZE)
+      .setInitialSize(IgniteMemoCacheBuilder.OFF_HEAP_INITIAL_SIZE)
       .setPageEvictionMode(DataPageEvictionMode.RANDOM_2_LRU)
 
     this.offHeapMaxSize match {
@@ -90,13 +91,13 @@ class IgniteAdapterBuilder private
       .setOnheapCacheEnabled(true) // on heap cache backed by off-heap + eviction
 
     val evictionPolicyFactory = this.onHeapEvictionPolicy match {
-      case OnHeapEvictionPolicy.LRU =>
+      case OnHeapEviction.LRU =>
         new LruEvictionPolicyFactory()
           .asInstanceOf[LruEvictionPolicyFactory[Long, Any]]
-      case OnHeapEvictionPolicy.FIFO =>
+      case OnHeapEviction.FIFO =>
         new FifoEvictionPolicyFactory()
           .asInstanceOf[FifoEvictionPolicyFactory[Long, Any]]
-      case OnHeapEvictionPolicy.SORTED =>
+      case OnHeapEviction.SORTED =>
         new SortedEvictionPolicyFactory()
           .asInstanceOf[SortedEvictionPolicyFactory[Long, Any]]
     }
@@ -115,6 +116,7 @@ class IgniteAdapterBuilder private
     new IgniteAdapter(icf, this.cacheName)
   }
 }
-object IgniteAdapterBuilder{
+
+object IgniteMemoCacheBuilder {
   val OFF_HEAP_INITIAL_SIZE: Long = 500L * 1024 * 1024
 }

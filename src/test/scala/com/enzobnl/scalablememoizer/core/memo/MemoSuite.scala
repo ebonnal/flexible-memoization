@@ -1,8 +1,8 @@
 package com.enzobnl.scalablememoizer.core.memo
 
-import com.enzobnl.scalablememoizer.caffeine.cache.CaffeineAdapter
-import com.enzobnl.scalablememoizer.core.cache.MutableMapAdapter
-import com.enzobnl.scalablememoizer.ignite.cache.{IgniteAdapterBuilder, OnHeapEvictionPolicy}
+import com.enzobnl.scalablememoizer.caffeine.cache.CaffeineMemoCacheBuilder
+import com.enzobnl.scalablememoizer.core.cache.MapMemoCacheBuilder
+import com.enzobnl.scalablememoizer.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
 import com.enzobnl.sparkscalaexpe.util.QuickSparkSessionFactory
 import org.apache.spark.sql.SparkSession
 import org.scalatest._
@@ -13,8 +13,8 @@ class MemoSuite extends FlatSpec {
 
 
   "(defaults, retrieves)" should "(3, 7) then (3, 17)" in {
-    val memoCache = new IgniteAdapterBuilder()
-      .withEviction(OnHeapEvictionPolicy.LRU)
+    val memoCache = new IgniteMemoCacheBuilder()
+      .withEviction(OnHeapEviction.LRU)
       .build()
 
     val memo = new Memo(memoCache)
@@ -28,7 +28,7 @@ class MemoSuite extends FlatSpec {
     for (i <- 1 to 10) memoizedf2(i % 3)
     assert((memoCache.misses, memoCache.hits) == (3, 17)) // 3 17
 
-    val memoCacheMap = new MutableMapAdapter
+    val memoCacheMap = new MapMemoCacheBuilder().build()
     val memo3 = new Memo(memoCacheMap)
     for (i <- 1 to 10) memo3(f)(i % 3)
     assert((memoCacheMap.misses, memoCacheMap.hits) == (3, 7)) // 3 7
@@ -54,8 +54,8 @@ class MemoSuite extends FlatSpec {
 
   }
   "fibo(20) ignite memo" should "take 21 runs" in {
-    val igniteMemo = new Memo(new IgniteAdapterBuilder()
-      .withEviction(OnHeapEvictionPolicy.LRU)
+    val igniteMemo = new Memo(new IgniteMemoCacheBuilder()
+      .withEviction(OnHeapEviction.LRU)
       .build())
     lazy val igniteMemoFibo: Int => Int = igniteMemo(n => {
       i += 1
@@ -73,7 +73,7 @@ class MemoSuite extends FlatSpec {
 
   }
   "fibo(20) caffeine memo" should "take 21 runs" in {
-    val caffeineMemo = new Memo(new CaffeineAdapter(10000))
+    val caffeineMemo = new Memo(new CaffeineMemoCacheBuilder().withMaxEntryNumber(Some(10000)))
     lazy val caffeineMemoFibo: Int => Int = caffeineMemo(n => {
       i += 1
       println(f"fibo Caffeine run$i")
@@ -90,7 +90,7 @@ class MemoSuite extends FlatSpec {
 
   }
   "fibo(20) MutableMap memo" should "take 21 runs" in {
-    val mapMemo = new Memo(new MutableMapAdapter)
+    val mapMemo = new Memo(new MapMemoCacheBuilder())
     lazy val mapMemoFibo: Int => Int = mapMemo(n => {
       i += 1
       n match {
@@ -134,15 +134,15 @@ class MemoSuite extends FlatSpec {
         ("Foldable", "Cell", 3000, 2),
         ("Pro", "Tablet", 4500, 2),
         ("Pro2", "Tablet", 6500, 2))).toDF("product", "category", "revenue", "un")
-    val igniteMemo = new Memo(new IgniteAdapterBuilder()
-      .withEviction(OnHeapEvictionPolicy.LRU)
+    val igniteMemo = new Memo(new IgniteMemoCacheBuilder()
+      .withEviction(OnHeapEviction.LRU)
       .build())
     lazy val igniteMemoFibo: Int => Int = igniteMemo {
       case 0 => 1
       case 1 => 1
       case n: Int => igniteMemoFibo(n - 1) + igniteMemoFibo(n - 2)
     }
-    val mapMemo = new Memo(new MutableMapAdapter)
+    val mapMemo = new Memo(new MapMemoCacheBuilder())
 
     lazy val mapMemoFibo: Int => Int = mapMemo {
       case 0 => 1

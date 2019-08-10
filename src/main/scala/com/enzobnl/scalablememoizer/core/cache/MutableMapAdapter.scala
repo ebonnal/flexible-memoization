@@ -3,7 +3,7 @@ package com.enzobnl.scalablememoizer.core.cache
 import scala.collection.mutable
 
 
-class MutableMapAdapter(evictor: Evictor = new NoEvictor) extends MemoCache {
+private class MutableMapAdapter(evictor: Evictor) extends MemoCache {
   val map: mutable.Map[Long, Any] = mutable.Map[Long, Any]()
 
   override def getOrElseUpdate(hash: Long, value: => Any): Any = {
@@ -20,3 +20,9 @@ class MutableMapAdapter(evictor: Evictor = new NoEvictor) extends MemoCache {
   }
 }
 
+class MapMemoCacheBuilder private(val evictor: Evictor) extends MemoCacheBuilder {
+  def this() = this(new NoEvictor)
+  def withEvictor(evictor: Evictor): MapMemoCacheBuilder = new MapMemoCacheBuilder(evictor)
+
+  override def build(): MemoCache = new MutableMapAdapter(evictor)
+}

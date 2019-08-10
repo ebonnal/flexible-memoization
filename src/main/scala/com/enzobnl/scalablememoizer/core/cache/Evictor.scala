@@ -10,13 +10,13 @@ trait Evictor {
 }
 
 class NoEvictor extends Evictor {
-  override def evict(map: mutable.Map[Long, Any], hash: Long, value: => Any) = ()
+  override def evict(map: mutable.Map[Long, Any], hash: Long, value: => Any): Unit = ()
 }
 
 trait LimitedEvictor extends Evictor {
   val maxEntryNumber: Long
   val removeRatio: Float
-  val removeThreshold = maxEntryNumber * (1 - removeRatio)
+  val removeThreshold: Double = maxEntryNumber * (1 - removeRatio)
 }
 
 class FifoEvictor(override val maxEntryNumber: Long,
@@ -25,7 +25,7 @@ class FifoEvictor(override val maxEntryNumber: Long,
   // remembers keys in arriving order
   var fifoList: List[Long] = List[Long]()
 
-  override def evict(map: mutable.Map[Long, Any], hash: Long, value: => Any) = {
+  override def evict(map: mutable.Map[Long, Any], hash: Long, value: => Any): Unit = {
     if (map.size == maxEntryNumber) {
       fifoList = fifoList.dropWhile(hash => {
         map.remove(hash)
@@ -49,19 +49,19 @@ class LruEvictor(override val maxEntryNumber: Long,
   var sortedSetOnTimeStamp: immutable.SortedSet[(Long, Long)] = immutable.SortedSet[(Long, Long)]()(ByFirstElement)
   var reverseMap: immutable.Map[Long, (Long, Long)] = immutable.Map[Long, (Long, Long)]()
 
-  override def evict(map: mutable.Map[Long, Any], hash: Long, value: => Any) = {
+  override def evict(map: mutable.Map[Long, Any], hash: Long, value: => Any): Unit = {
     if (map.size == maxEntryNumber) {
       // remove a part of map entries (part = REMOVE_RATIO), starting from the left (=smallest timestamps)
       sortedSetOnTimeStamp = sortedSetOnTimeStamp.dropWhile({
-        case (_, hash) =>
-          map.remove(hash)
-          reverseMap = reverseMap - hash
+        case (_, h) =>
+          map.remove(h)
+          reverseMap = reverseMap - h
           map.size > removeThreshold
       })
     }
     else {
       // add in timestamp ascending ordered set and reverseMap
-      val pair = (System.nanoTime() -> hash)
+      val pair = System.nanoTime() -> hash
       sortedSetOnTimeStamp = sortedSetOnTimeStamp + pair
       reverseMap = reverseMap + (hash -> pair)
     }
