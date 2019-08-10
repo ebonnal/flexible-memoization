@@ -26,7 +26,7 @@ trait HitCounterMixin {
   protected[scalablememoizer] var hits = 0L
   protected[scalablememoizer] var misses = 0L
 
-  def getHitsMisses: (Long, Long) = (hits, misses)
+  def getHitsAndMisses: (Long, Long) = (hits, misses)
 }
 
 /** Base trait for memoization caches

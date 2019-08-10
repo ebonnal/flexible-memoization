@@ -30,4 +30,30 @@ class Memo(cache: MemoCache) extends MemoMixin {
         sharedCache.getOrElseUpdate((f.hashCode(), v1, v2).hashCode(), f.apply(v1, v2)).asInstanceOf[R]
     }
   }
+
+  override def apply[I, R](f: I => R, accessCache: I => Boolean): I => R = {
+    cache.notifyDependencyStart()
+    new (I => R) with CacheNotifierMixin {
+      override  val sharedCache: MemoCache = cache
+      override def apply(v1: I): R = {
+        if (accessCache(v1))
+          sharedCache.getOrElseUpdate((f.hashCode(), v1).hashCode(), f.apply(v1)).asInstanceOf[R]
+        else
+          f.apply(v1)
+      }
+    }
+  }
+
+  override def apply[I1, I2, R](f: (I1, I2) => R, accessCache: (I1, I2) => Boolean): (I1, I2) => R = {
+    cache.notifyDependencyStart()
+    new ((I1, I2) => R) with CacheNotifierMixin {
+      override  val sharedCache: MemoCache = cache
+      override def apply(v1: I1, v2: I2): R = {
+        if (accessCache(v1, v2))
+          sharedCache.getOrElseUpdate((f.hashCode(), v1, v2).hashCode(), f.apply(v1, v2)).asInstanceOf[R]
+        else
+          f.apply(v1, v2)
+      }
+    }
+  }
 }

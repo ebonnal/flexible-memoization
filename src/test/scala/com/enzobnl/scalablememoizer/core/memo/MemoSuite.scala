@@ -3,8 +3,6 @@ package com.enzobnl.scalablememoizer.core.memo
 import com.enzobnl.scalablememoizer.caffeine.cache.CaffeineMemoCacheBuilder
 import com.enzobnl.scalablememoizer.core.cache.MapMemoCacheBuilder
 import com.enzobnl.scalablememoizer.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
-import com.enzobnl.sparkscalaexpe.util.QuickSparkSessionFactory
-import org.apache.spark.sql.SparkSession
 import org.scalatest._
 import scalaz.Memo.mutableHashMapMemo
 
@@ -35,6 +33,14 @@ class MemoSuite extends FlatSpec {
     val memoized3 = memo3(f)
     for (i <- 1 to 10) memoized3(i % 3)
     assert((memoCacheMap.misses, memoCacheMap.hits) == (3, 17)) // 3,17
+  }
+  "cache access condition" should "give 20 misses and 0 hits" in {
+    val cache = new MapMemoCacheBuilder().build()
+    val f = (i: Int, j: Int) => Math.log(i*j)
+    val condition = (i: Int, j: Int) => i == j
+    val memoized = new Memo(cache)(f, condition)
+    for(i <- 1 to 20; j <- 1 to 20) memoized(i, j)
+    println(cache.getHitsAndMisses._2 == 20)
   }
   var i = 0
 
@@ -120,50 +126,6 @@ class MemoSuite extends FlatSpec {
     assert(scalazMemoFibo(20) == 10946)
     assert(i == 21)
   }
-  "fibo(20) no memo vs any memo within spark" should "take 21891 vs 21 runs" in {
-    lazy val spark: SparkSession = QuickSparkSessionFactory.getOrCreate()
-    lazy val sc = spark.sparkContext
-    lazy val df = spark.createDataFrame(
-      Seq(("Thin", "Cell", 6000, 1),
-        ("Normal", "Tablet", 1500, 1),
-        ("Mini", "Tablet", 5500, 1),
-        ("Ultra thin", "Cell", 5000, 1),
-        ("Very thin", "Cell", 6000, 1),
-        ("Big", "Tablet", 2500, 2),
-        ("Bendable", "Cell", 3000, 2),
-        ("Foldable", "Cell", 3000, 2),
-        ("Pro", "Tablet", 4500, 2),
-        ("Pro2", "Tablet", 6500, 2))).toDF("product", "category", "revenue", "un")
-    val igniteMemo = new Memo(new IgniteMemoCacheBuilder()
-      .withEviction(OnHeapEviction.LRU)
-      .build())
-    lazy val igniteMemoFibo: Int => Int = igniteMemo {
-      case 0 => 1
-      case 1 => 1
-      case n: Int => igniteMemoFibo(n - 1) + igniteMemoFibo(n - 2)
-    }
-    val mapMemo = new Memo(new MapMemoCacheBuilder())
 
-    lazy val mapMemoFibo: Int => Int = mapMemo {
-      case 0 => 1
-      case 1 => 1
-      case n: Int => mapMemoFibo(n - 1) + mapMemoFibo(n - 2)
-    }
-
-    spark.udf.register("f", igniteMemoFibo)
-    assert(spark.createDataFrame(for (i <- 1 to 20) yield Tuple1(i))
-      .toDF("n")
-      .selectExpr("f(n)")
-      .collect().last.getAs[Int](0) == 10946
-    )
-
-    spark.udf.register("f", mapMemoFibo)
-    assert(spark.createDataFrame(for (i <- 1 to 20) yield Tuple1(i))
-      .toDF("n")
-      .selectExpr("f(n)")
-      .collect().last.getAs[Int](0) == 10946
-    )
-    spark.stop()
-    System.gc()
-  }
+  System.gc()
 }
