@@ -84,7 +84,7 @@ class MemoSuite extends FlatSpec {
 
     assert(igniteMemoFibo(20) == 10946)
     assert(i == 21)
-
+    System.gc()
   }
   "fibo(20) caffeine memo" should "take 21 runs" in {
     val caffeineMemo = new Memo(new CaffeineMemoCacheBuilder().withMaxEntryNumber(Some(10000)))
@@ -135,5 +135,5 @@ class MemoSuite extends FlatSpec {
     assert(i == 21)
   }
 
-  System.gc()
+
 }

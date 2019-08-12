@@ -52,6 +52,7 @@ class GeneralSuite extends FlatSpec{
       .collect().last.getAs[Int](0) == 10946
     )
     spark.stop()
+    System.gc()
   }
-  System.gc()
+
 }
