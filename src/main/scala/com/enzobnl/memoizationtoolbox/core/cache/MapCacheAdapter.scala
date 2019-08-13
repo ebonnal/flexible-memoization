@@ -1,6 +1,6 @@
-package com.enzobnl.scalablememoizer.core.cache
+package com.enzobnl.memoizationtoolbox.core.cache
 
-import com.enzobnl.scalablememoizer.util.Timeit
+import com.enzobnl.memoizationtoolbox.util.Timeit
 
 import scala.collection.{immutable, mutable}
 

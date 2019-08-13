@@ -1,6 +1,6 @@
-package com.enzobnl.scalablememoizer.caffeine.cache
+package com.enzobnl.memoizationtoolbox.caffeine.cache
 
-import com.enzobnl.scalablememoizer.core.cache.Cache
+import com.enzobnl.memoizationtoolbox.core.cache.Cache
 import com.github.blemale.scaffeine.Scaffeine
 
 private class CaffeineCacheAdapter(scaffeine: Scaffeine[Any, Any]) extends Cache {

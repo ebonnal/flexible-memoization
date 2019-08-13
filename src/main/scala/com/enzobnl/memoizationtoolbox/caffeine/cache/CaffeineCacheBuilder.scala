@@ -1,6 +1,6 @@
-package com.enzobnl.scalablememoizer.caffeine.cache
+package com.enzobnl.memoizationtoolbox.caffeine.cache
 
-import com.enzobnl.scalablememoizer.core.cache.{Cache, CacheBuilder}
+import com.enzobnl.memoizationtoolbox.core.cache.{Cache, CacheBuilder}
 
 class CaffeineCacheBuilder private(maxEntryNumber: Option[Long]) extends CacheBuilder {
   def this() = this(None)

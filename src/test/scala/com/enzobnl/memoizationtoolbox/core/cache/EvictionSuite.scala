@@ -1,9 +1,9 @@
-package com.enzobnl.scalablememoizer.core.cache
+package com.enzobnl.memoizationtoolbox.core.cache
 
 import org.scalatest.FlatSpec
 
 
-class EvictorSuite extends FlatSpec {
+class EvictionSuite extends FlatSpec {
   "Fifo with 2 entries max, on keys stream <<-(1,2,3,4)<<-" should "give (3,4)" in {
     val cache: FIFOEvictorMapCacheAdapter = new MapCacheBuilder(2).withEvictor(Eviction.FIFO).build().asInstanceOf[FIFOEvictorMapCacheAdapter]
     cache.getOrElseUpdate(1, "a")

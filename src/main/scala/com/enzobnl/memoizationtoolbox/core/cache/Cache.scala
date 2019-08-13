@@ -1,4 +1,4 @@
-package com.enzobnl.scalablememoizer.core.cache
+package com.enzobnl.memoizationtoolbox.core.cache
 
 
 trait Gettable {
@@ -23,8 +23,8 @@ trait NotifiableMixin extends ClosableMixin {
 }
 
 trait HitCounterMixin {
-  protected[scalablememoizer] var hits = 0L
-  protected[scalablememoizer] var misses = 0L
+  protected[memoizationtoolbox] var hits = 0L
+  protected[memoizationtoolbox] var misses = 0L
 
   def getHitsAndMisses: (Long, Long) = (hits, misses)
 }

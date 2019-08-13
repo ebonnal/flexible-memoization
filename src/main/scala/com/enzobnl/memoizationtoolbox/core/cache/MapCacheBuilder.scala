@@ -1,7 +1,7 @@
-package com.enzobnl.scalablememoizer.core.cache
+package com.enzobnl.memoizationtoolbox.core.cache
 
 
-import com.enzobnl.scalablememoizer.core.cache.Eviction.Eviction
+import com.enzobnl.memoizationtoolbox.core.cache.Eviction.Eviction
 
 object Eviction extends Enumeration {
   type Eviction = Value

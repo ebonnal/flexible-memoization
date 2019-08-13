@@ -1,27 +1,15 @@
-package com.enzobnl.scalablememoizer.core
+package com.enzobnl.memoizationtoolbox.core
 
-import com.enzobnl.scalablememoizer.core.cache.MapCacheBuilder
-import com.enzobnl.scalablememoizer.core.memo.Memo
-import com.enzobnl.scalablememoizer.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
-import com.enzobnl.sparkscalaexpe.util.QuickSparkSessionFactory
+import com.enzobnl.memoizationtoolbox.core.cache.MapCacheBuilder
+import com.enzobnl.memoizationtoolbox.core.memo.Memo
+import com.enzobnl.memoizationtoolbox.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.memoizationtoolbox.util.QuickSparkSessionFactory
 import org.apache.spark.sql.SparkSession
 import org.scalatest.FlatSpec
-
 class GeneralSuite extends FlatSpec{
+  lazy val spark: SparkSession = QuickSparkSessionFactory.getOrCreate()
   "fibo(20) no memo vs any memo within spark" should "take 21891 vs 21 runs" in {
-    lazy val spark: SparkSession = QuickSparkSessionFactory.getOrCreate()
-    lazy val sc = spark.sparkContext
-    lazy val df = spark.createDataFrame(
-      Seq(("Thin", "Cell", 6000, 1),
-        ("Normal", "Tablet", 1500, 1),
-        ("Mini", "Tablet", 5500, 1),
-        ("Ultra thin", "Cell", 5000, 1),
-        ("Very thin", "Cell", 6000, 1),
-        ("Big", "Tablet", 2500, 2),
-        ("Bendable", "Cell", 3000, 2),
-        ("Foldable", "Cell", 3000, 2),
-        ("Pro", "Tablet", 4500, 2),
-        ("Pro2", "Tablet", 6500, 2))).toDF("product", "category", "revenue", "un")
+
     val igniteMemo = new Memo(new IgniteMemoCacheBuilder()
       .withOnHeapEviction(OnHeapEviction.LRU)
       .build())
@@ -39,7 +27,8 @@ class GeneralSuite extends FlatSpec{
     }
 
     spark.udf.register("f", igniteMemoFibo)
-    assert(spark.createDataFrame(for (i <- 1 to 20) yield Tuple1(i))
+    val data = for (i <- 1 to 20) yield Tuple1(i)
+    assert(spark.createDataFrame(data)
       .toDF("n")
       .selectExpr("f(n)")
       .collect().last.getAs[Int](0) == 10946

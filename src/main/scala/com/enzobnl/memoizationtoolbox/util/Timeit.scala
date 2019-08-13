@@ -1,4 +1,4 @@
-package com.enzobnl.scalablememoizer.util
+package com.enzobnl.memoizationtoolbox.util
 
 object Timeit {
   def print[R](block: => R): R = {

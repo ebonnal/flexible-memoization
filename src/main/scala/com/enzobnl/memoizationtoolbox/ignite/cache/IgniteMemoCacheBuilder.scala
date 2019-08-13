@@ -1,8 +1,8 @@
-package com.enzobnl.scalablememoizer.ignite.cache
+package com.enzobnl.memoizationtoolbox.ignite.cache
 
-import com.enzobnl.scalablememoizer.core.cache.{Cache, CacheBuilder}
-import com.enzobnl.scalablememoizer.ignite.cache.OffHeapEviction.OffHeapEviction
-import com.enzobnl.scalablememoizer.ignite.cache.OnHeapEviction.OnHeapEviction
+import com.enzobnl.memoizationtoolbox.core.cache.{Cache, CacheBuilder}
+import com.enzobnl.memoizationtoolbox.ignite.cache.OffHeapEviction.OffHeapEviction
+import com.enzobnl.memoizationtoolbox.ignite.cache.OnHeapEviction.OnHeapEviction
 import org.apache.ignite.cache.eviction.fifo.FifoEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.lru.LruEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.sorted.SortedEvictionPolicyFactory

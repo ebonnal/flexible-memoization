@@ -1,4 +1,4 @@
-package com.enzobnl.scalablememoizer.core.memo
+package com.enzobnl.memoizationtoolbox.core.memo
 
 trait MemoMixin {
   def apply[I, R](f: I => R): I => R

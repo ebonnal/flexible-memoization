@@ -1,6 +1,6 @@
-package com.enzobnl.scalablememoizer.core.memo
+package com.enzobnl.memoizationtoolbox.core.memo
 
-import com.enzobnl.scalablememoizer.core.cache.{Cache, CacheBuilder}
+import com.enzobnl.memoizationtoolbox.core.cache.{Cache, CacheBuilder}
 
 trait CacheNotifierMixin {
   val sharedCache: Cache
