@@ -3,30 +3,22 @@ package com.enzobnl.memoizationtoolbox.core.cache
 
 import com.enzobnl.memoizationtoolbox.core.cache.Eviction.Eviction
 
-object Eviction extends Enumeration {
-  type Eviction = Value
-  /**
-    * Evicts least recently used entry
-    */
-  val LRU,
-
-  /**
-    * Evicts oldest entry in the cache
-    */
-  FIFO,
-
-  /**
-    * Evicts entry with smaller computation time cost
-    */
-  COST = Value
-}
 
 
+/**
+  * Design: Functional Builder Pattern allowing fluent customization of Scala Map based Cache.
+  *
+  * @param evictionPolicy: Policy used if maxEntryNumber size reached
+  * @param maxEntryNumber: Maximum number of entries in the cache
+  * @param removeRatio: Float in ]0, 1] indicating the size of the eviction bactches
+  *                   (removeRatio*maxEntryNumber entries). If set to 1, the entire cache is purged
+  *                   each time it reaches maxEntryNumber entries.
+  */
 class MapCacheBuilder private(val evictionPolicy: Eviction,
                               val maxEntryNumber: Long,
                               val removeRatio: Float) extends CacheBuilder {
 
-  def this(maxEntryNumber: Long) = this(Eviction.LRU, maxEntryNumber, 0.05f)
+  def this() = this(Eviction.LRU, 10000, 0.05f)
 
   def withEvictor(eviction: Eviction): MapCacheBuilder =
     new MapCacheBuilder(eviction, maxEntryNumber, removeRatio)

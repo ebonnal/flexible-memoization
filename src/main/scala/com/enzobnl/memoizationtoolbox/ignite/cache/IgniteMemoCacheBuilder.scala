@@ -3,42 +3,23 @@ package com.enzobnl.memoizationtoolbox.ignite.cache
 import com.enzobnl.memoizationtoolbox.core.cache.{Cache, CacheBuilder}
 import com.enzobnl.memoizationtoolbox.ignite.cache.OffHeapEviction.OffHeapEviction
 import com.enzobnl.memoizationtoolbox.ignite.cache.OnHeapEviction.OnHeapEviction
+import org.apache.ignite.cache.CacheMode
 import org.apache.ignite.cache.eviction.fifo.FifoEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.lru.LruEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.sorted.SortedEvictionPolicyFactory
 import org.apache.ignite.configuration._
 
-object OnHeapEviction extends Enumeration {
-  type OnHeapEviction = Value
-  /**
-    * Evicts least recently used entry
-    */
-  val LRU,
 
-  /**
-    * Evicts oldest entry in the cache
-    */
-  FIFO,
-
-  /**
-    * Evicts entry with smaller value (can use user comparison func)
-    */
-  SORTED = Value
-}
-
-object OffHeapEviction extends Enumeration {
-  type OffHeapEviction = Value
-  /**
-    * Pick randomly 5 entries and evicts least recently used entry
-    */
-  val RANDOM_LRU,
-
-  /**
-    * Pick randomly 5 entries and evicts the one with the oldest penultimate use
-    */
-  RANDOM_2_LRU = Value
-}
-
+/**
+  * Design: Functional Builder Pattern allowing fluent customization of ignite based Cache.
+  *
+  * @param onHeapMaxSize         : in Bytes
+  * @param offHeapMaxSize        : in Bytes
+  * @param offHeapInitialSize    : in Bytes
+  * @param onHeapEvictionPolicy  : Policy used to move entries from on-heap to off-heap when on-heap
+  *                              reaches onHeapMaxSize.
+  * @param offHeapEvictionPolicy : Policy used to evict entries from off-heap when offHeapMaxSize reached.
+  */
 class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
                                      offHeapMaxSize: Option[Long],
                                      offHeapInitialSize: Option[Long],
@@ -53,9 +34,7 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
     OffHeapEviction.RANDOM_2_LRU
   )
 
-  val cacheName = s"cache$hashCode"
-  val storageRegionName = s"region$hashCode"
-  val igniteInstanceName = s"instance$hashCode"
+  val igniteInstanceName = s"instance$hashCode" // One per IgniteCacheAdapterBuilder
 
   def withOnHeapMaxSize(size: Option[Long]): IgniteMemoCacheBuilder = {
     new IgniteMemoCacheBuilder(size, offHeapMaxSize, offHeapInitialSize, onHeapEvictionPolicy, offHeapEvictionPolicy)
@@ -77,7 +56,7 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
 
     // Creating a new data region.
     val regionCfg = new DataRegionConfiguration()
-      .setName(this.storageRegionName)
+      .setName(IgniteMemoCacheBuilder.STORAGE_REGION_NAME)
 
     this.offHeapInitialSize match {
       case Some(size) => regionCfg.setInitialSize(size) // 500 MB initial size (RAM).
@@ -98,8 +77,9 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
 
     val storageCfg = new DataStorageConfiguration().setDataRegionConfigurations(regionCfg)
 
-    val cacheConfig: CacheConfiguration[Long, Any] = new CacheConfiguration(this.cacheName)
+    val cacheConfig: CacheConfiguration[Long, Any] = new CacheConfiguration(IgniteMemoCacheBuilder.CACHE_NAME)
       .setOnheapCacheEnabled(true) // on heap cache backed by off-heap + eviction
+      .setCacheMode(CacheMode.PARTITIONED) // already default
 
     val evictionPolicyFactory = this.onHeapEvictionPolicy match {
       case OnHeapEviction.LRU =>
@@ -121,9 +101,16 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
 
     val icf: IgniteConfiguration = new IgniteConfiguration()
       .setCacheConfiguration(cacheConfig)
-      .setIgniteInstanceName(this.igniteInstanceName) // ensures 2 nodes can be started on same JVM
+      // ensures 2 nodes can be started on same JVM, thus close of one node triggered by end of use of*
+      // one IgniteCacheAdapter still let others have their lives
+      .setIgniteInstanceName(this.igniteInstanceName)
       .setDataStorageConfiguration(storageCfg)
 
-    new IgniteCacheAdapter(icf, this.cacheName)
+    new IgniteCacheAdapter(icf)
   }
+}
+
+object IgniteMemoCacheBuilder {
+  val CACHE_NAME = "MemoizationCache" // always same name to have a sharing among cluster
+  val STORAGE_REGION_NAME = s"MemoizationStorageRegion"
 }

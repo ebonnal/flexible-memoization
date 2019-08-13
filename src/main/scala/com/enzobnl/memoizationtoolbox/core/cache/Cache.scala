@@ -1,14 +1,19 @@
 package com.enzobnl.memoizationtoolbox.core.cache
 
-
+/**
+  * Mimic the usefull getOrElseUpdate method from mutable.Map
+  */
 trait Gettable {
-  def getOrElseUpdate(key: Long, value: => Any): Any
+  def getOrElseUpdate(key: Int, value: => Any): Any
 }
 
 trait ClosableMixin {
   def close(): Unit = ()
 }
 
+/** Design: Observer Pattern that listen on its notifyDependencyStart and
+  * notifyDependencyEnd methods.
+  */
 trait NotifiableMixin extends ClosableMixin {
   private var nSubjects: Int = 0
 
@@ -19,21 +24,26 @@ trait NotifiableMixin extends ClosableMixin {
     tryToClose()
   }
 
+  /**
+    * If there is no more subjects observed, close
+    */
   def tryToClose(): Unit = if (nSubjects == 0) close()
 }
 
+/**
+  * Define two counters for hits and misses and provide access to their tuple and hit ratio.
+  */
 trait HitCounterMixin {
-  protected[memoizationtoolbox] var hits = 0L
-  protected[memoizationtoolbox] var misses = 0L
+  protected[cache] var hits = 0L
+  protected[cache] var misses = 0L
 
   def getHitsAndMisses: (Long, Long) = (hits, misses)
+  def getHitRatio: Float = hits/(hits + misses)
+
 }
 
-/** Base trait for memoization caches
-  *
-  * Design: Observer pattern that listen on its notifyDependencyStart and
-  * notifyDependencyEnd methods. Memo is charged to register it as
-  * member of memoized functions.
+/**
+  * Base trait needed by core.memo.Memo
   */
 trait Cache extends Gettable with NotifiableMixin with HitCounterMixin
 

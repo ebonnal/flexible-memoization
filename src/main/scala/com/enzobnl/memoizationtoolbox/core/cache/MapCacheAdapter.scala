@@ -4,15 +4,18 @@ import com.enzobnl.memoizationtoolbox.util.Timeit
 
 import scala.collection.{immutable, mutable}
 
-class FIFOEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val removeRatio: Float) extends Cache {
+
+
+private[cache] class FIFOEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long,
+                                                               val removeRatio: Float) extends Cache {
 
   val removeThreshold: Double = maxEntryNumber * (1 - removeRatio)
   // key list
-  var fifoList: List[Long] = List[Long]()
+  var fifoList: List[Int] = List[Int]()
   // key -> value map
-  val map: mutable.Map[Long, Any] = mutable.Map[Long, Any]()
+  val map: mutable.Map[Int, Any] = mutable.Map[Int, Any]()
 
-  override def getOrElseUpdate(hash: Long, value: => Any): Any = {
+  override def getOrElseUpdate(hash: Int, value: => Any): Any = {
     var computed = false
     val result = map.getOrElseUpdate(hash, {
       computed = true
@@ -26,7 +29,7 @@ class FIFOEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val re
     result
   }
 
-  def evict(hash: Long, value: => Any): Unit = {
+  def evict(hash: Int, value: => Any): Unit = {
 
     if (map.size == maxEntryNumber) {
       fifoList = fifoList.dropWhile(hash => {
@@ -43,7 +46,7 @@ class FIFOEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val re
   }
 }
 
-private[cache] case class LRUSortedSetEntry(timestamp: Long, hash: Long)
+private[cache] case class LRUSortedSetEntry(timestamp: Long, hash: Int)
 
 class LRUEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val removeRatio: Float) extends Cache {
 
@@ -53,11 +56,12 @@ class LRUEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val rem
 
   val removeThreshold: Double = maxEntryNumber * (1 - removeRatio)
   // (timestamp, key) -> key map, sorted on timestamp
-  var sortedSetOnTimeStamp: immutable.SortedSet[LRUSortedSetEntry] = immutable.SortedSet[LRUSortedSetEntry]()(ByFirstElement)
+  var sortedSetOnTimeStamp: immutable.SortedSet[LRUSortedSetEntry] =
+    immutable.SortedSet[LRUSortedSetEntry]()(ByFirstElement)
   // key -> ((timestamp, key), value) map
-  var map: mutable.Map[Long, (LRUSortedSetEntry, Any)] = mutable.Map[Long, (LRUSortedSetEntry, Any)]()
+  var map: mutable.Map[Int, (LRUSortedSetEntry, Any)] = mutable.Map[Int, (LRUSortedSetEntry, Any)]()
 
-  override def getOrElseUpdate(hash: Long, value: => Any): Any = {
+  override def getOrElseUpdate(hash: Int, value: => Any): Any = {
     var computed = false
     val result = map.getOrElseUpdate(hash, {
       computed = true
@@ -73,7 +77,7 @@ class LRUEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val rem
     result._2
   }
 
-  def evict(hash: Long, value: => Any): LRUSortedSetEntry = {
+  def evict(hash: Int, value: => Any): LRUSortedSetEntry = {
     if (map.size == maxEntryNumber) {
       // remove a part of map entries (part = REMOVE_RATIO), starting from the left (=smallest timestamps)
       sortedSetOnTimeStamp = sortedSetOnTimeStamp.dropWhile({
@@ -94,17 +98,18 @@ class LRUEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val rem
   }
 }
 
-class CostEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val removeRatio: Float) extends Cache {
+private[cache] class CostEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long,
+                                                               val removeRatio: Float) extends Cache {
 
-  object ByFirstElement extends Ordering[(Long, Long)] {
-    override def compare(a: (Long, Long), b: (Long, Long)): Int = a._1 compareTo b._1
+  object ByFirstElement extends Ordering[(Long, Int)] {
+    override def compare(a: (Long, Int), b: (Long, Int)): Int = a._1 compareTo b._1
   }
 
   val removeThreshold: Double = maxEntryNumber * (1 - removeRatio)
-  var sortedSetOnCost: immutable.SortedSet[(Long, Long)] = immutable.SortedSet[(Long, Long)]()(ByFirstElement)
-  val map: mutable.Map[Long, Any] = mutable.Map[Long, Any]()
+  var sortedSetOnCost: immutable.SortedSet[(Long, Int)] = immutable.SortedSet[(Long, Int)]()(ByFirstElement)
+  val map: mutable.Map[Int, Any] = mutable.Map[Int, Any]()
 
-  override def getOrElseUpdate(hash: Long, value: => Any): Any = {
+  override def getOrElseUpdate(hash: Int, value: => Any): Any = {
     var computed = false
     val result = map.getOrElseUpdate(hash, {
       computed = true
@@ -118,7 +123,7 @@ class CostEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val re
     result
   }
 
-  def evict(hash: Long, value: => Any): Unit = {
+  def evict(hash: Int, value: => Any): Unit = {
     if (map.size == maxEntryNumber) {
       // remove a part of map entries (part = REMOVE_RATIO), starting from the left (=smallest timestamps)
       sortedSetOnCost = sortedSetOnCost.dropWhile({
@@ -132,8 +137,6 @@ class CostEvictorMapCacheAdapter private[cache](val maxEntryNumber: Long, val re
           }
       })
     }
-    // add in timestamp ascending ordered set and reverseMap
-    val pair = System.nanoTime() -> hash
     sortedSetOnCost = sortedSetOnCost + (Timeit.get(value) -> hash)
 
   }

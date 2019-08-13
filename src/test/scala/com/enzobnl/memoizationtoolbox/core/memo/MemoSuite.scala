@@ -19,23 +19,24 @@ class MemoSuite extends FlatSpec {
     val f = (i: Int) => i * 4
     val memoizedf = memo(f)
     for (i <- 1 to 10) memoizedf(i % 3)
-    assert((memoCache.misses, memoCache.hits) == (3, 7)) // 3 7
+    assert(memoCache.getHitsAndMisses == (7, 3)) // 3 7
+
 
     val memo2 = new Memo(memoCache)
     val memoizedf2 = memo2(f)
     for (i <- 1 to 10) memoizedf2(i % 3)
-    assert((memoCache.misses, memoCache.hits) == (3, 17)) // 3 17
+    assert(memoCache.getHitsAndMisses == (17, 3)) // 3 17
 
-    val memoCacheMap = new MapCacheBuilder(10000).build()
+    val memoCacheMap = new MapCacheBuilder().build()
     val memo3 = new Memo(memoCacheMap)
     for (i <- 1 to 10) memo3(f)(i % 3)
-    assert((memoCacheMap.misses, memoCacheMap.hits) == (3, 7)) // 3 7
+    assert(memoCacheMap.getHitsAndMisses == (7, 3)) // 3 7
     val memoized3 = memo3(f)
     for (i <- 1 to 10) memoized3(i % 3)
-    assert((memoCacheMap.misses, memoCacheMap.hits) == (3, 17)) // 3,17
+    assert(memoCacheMap.getHitsAndMisses == (17, 3)) // 3,17
   }
   "cache access condition (I1, I2) => R" should "give consistent hits and misses" in {
-    val cache = new MapCacheBuilder(10000).build()
+    val cache = new MapCacheBuilder().build()
     val f = (i: Int, j: Int) => Math.log(i * j)
     val condition = (i: Int, j: Int) => i == j
     val memoized = new Memo(cache)(f, condition)
@@ -43,7 +44,7 @@ class MemoSuite extends FlatSpec {
     assert(cache.getHitsAndMisses._2 == 20)
   }
   "cache access condition on I => R" should "give consistent hits and misses" in {
-    val cache = new MapCacheBuilder(10000).build()
+    val cache = new MapCacheBuilder().build()
     val f = (i: Int) => Math.log(i)
     val condition = (i: Int) => i > 10
     val memoized = new Memo(cache)(f, condition)
@@ -104,7 +105,7 @@ class MemoSuite extends FlatSpec {
 
   }
   "fibo(20) MutableMap memo" should "take 21 runs" in {
-    val mapMemo = new Memo(new MapCacheBuilder(10000))
+    val mapMemo = new Memo(new MapCacheBuilder())
     lazy val mapMemoFibo: Int => Int = mapMemo(n => {
       i += 1
       n match {

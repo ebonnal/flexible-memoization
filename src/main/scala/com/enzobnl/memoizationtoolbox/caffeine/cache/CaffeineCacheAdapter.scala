@@ -3,15 +3,21 @@ package com.enzobnl.memoizationtoolbox.caffeine.cache
 import com.enzobnl.memoizationtoolbox.core.cache.Cache
 import com.github.blemale.scaffeine.Scaffeine
 
+/**
+  * Design: Adapter Pattern wrapping Caffeine (fast mono node cache with versatile w_TinyLFU
+  * eviction) under memoizationtoolbox.core.cache.Cache interface.
+  *
+  * It is not part of the public API: Client must use CaffeineCacheAdapterBuilder to instanciate it.
+  * @param scaffeine: scala wrapper around caffeine.cache.Caffeine[K, V]
+  */
 private class CaffeineCacheAdapter(scaffeine: Scaffeine[Any, Any]) extends Cache {
   def this(maxEntryNumber: Long) = this(Scaffeine().maximumSize(maxEntryNumber))
 
   def this() = this(Scaffeine())
 
-  lazy val caffeineCache: com.github.blemale.scaffeine.Cache[Long, Any] =
-    scaffeine.build[Long, Any]()
+  lazy val caffeineCache: com.github.blemale.scaffeine.Cache[Int, Any] = scaffeine.build[Int, Any]()
 
-  override def getOrElseUpdate(key: Long, value: => Any): Any = {
+  override def getOrElseUpdate(key: Int, value: => Any): Any = {
     caffeineCache.getIfPresent(key) match {
       case Some(v) =>
         hits += 1
