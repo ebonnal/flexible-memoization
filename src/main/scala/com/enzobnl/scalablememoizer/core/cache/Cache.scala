@@ -35,8 +35,8 @@ trait HitCounterMixin {
   * notifyDependencyEnd methods. Memo is charged to register it as
   * member of memoized functions.
   */
-trait MemoCache extends Gettable with NotifiableMixin with HitCounterMixin
+trait Cache extends Gettable with NotifiableMixin with HitCounterMixin
 
-trait MemoCacheBuilder{
-  def build(): MemoCache
+trait CacheBuilder {
+  def build(): Cache
 }

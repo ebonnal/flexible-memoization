@@ -1,6 +1,6 @@
 package com.enzobnl.scalablememoizer.core
 
-import com.enzobnl.scalablememoizer.core.cache.MapMemoCacheBuilder
+import com.enzobnl.scalablememoizer.core.cache.MapCacheBuilder
 import com.enzobnl.scalablememoizer.core.memo.Memo
 import com.enzobnl.scalablememoizer.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
 import com.enzobnl.sparkscalaexpe.util.QuickSparkSessionFactory
@@ -23,14 +23,14 @@ class GeneralSuite extends FlatSpec{
         ("Pro", "Tablet", 4500, 2),
         ("Pro2", "Tablet", 6500, 2))).toDF("product", "category", "revenue", "un")
     val igniteMemo = new Memo(new IgniteMemoCacheBuilder()
-      .withEviction(OnHeapEviction.LRU)
+      .withOnHeapEviction(OnHeapEviction.LRU)
       .build())
     lazy val igniteMemoFibo: Int => Int = igniteMemo {
       case 0 => 1
       case 1 => 1
       case n: Int => igniteMemoFibo(n - 1) + igniteMemoFibo(n - 2)
     }
-    val mapMemo = new Memo(new MapMemoCacheBuilder())
+    val mapMemo = new Memo(new MapCacheBuilder(10000))
 
     lazy val mapMemoFibo: Int => Int = mapMemo {
       case 0 => 1
