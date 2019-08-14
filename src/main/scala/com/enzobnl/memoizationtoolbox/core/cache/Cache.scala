@@ -38,7 +38,7 @@ trait HitCounterMixin {
   protected[cache] var misses = 0L
 
   def getHitsAndMisses: (Long, Long) = (hits, misses)
-  def getHitRatio: Float = hits/(hits + misses)
+  def getHitRatio: Float = hits.toFloat/(hits + misses)
 
 }
 

@@ -1,7 +1,8 @@
 package com.enzobnl.memoizationtoolbox.ignite.cache
 
 import com.enzobnl.memoizationtoolbox.core.cache.Cache
-import org.apache.ignite.{Ignite, IgniteCache, Ignition, configuration}
+import org.apache.ignite.configuration.IgniteConfiguration
+import org.apache.ignite.{Ignite, IgniteCache, Ignition}
 
 /**
   * Design: Adapter Pattern wrapping Apache Ignite (fast in-memory datagrid allowing seemless
@@ -9,14 +10,33 @@ import org.apache.ignite.{Ignite, IgniteCache, Ignition, configuration}
   *
   * It is not part of the public API: Client must use IgniteCacheAdapterBuilder to instanciate it.
   *
-  * @param ignite
+  * @param node : Ignite instance lazy param, can be derived from IgniteConfiguration
+  *             by alternative constructor
   */
-private class IgniteCacheAdapter(ignite: Ignite) extends Cache {
+private class IgniteCacheAdapter(icf: Option[IgniteConfiguration],
+                                 node: => Option[Ignite]) extends Cache {
 
-  def this(icf: configuration.IgniteConfiguration) = this(Ignition.start(icf))
+  def this(providedIgnite: => Ignite) = this(None, Some(providedIgnite))
+
+  def this(icf: IgniteConfiguration) = this(Some(icf), None)
 
   var isClosed = false
-  val igniteCache: IgniteCache[Int, Any] = ignite.getOrCreateCache[Int, Any](IgniteMemoCacheBuilder.CACHE_NAME)
+
+  lazy val ignite: Ignite = node match {
+    // if ignite node provided, use it
+    case Some(ign) => ign
+    case None =>
+      icf match {
+        // else if config provided, use it to start ignite node with unique name
+        case Some(conf) =>
+          Ignition.start(conf.setIgniteInstanceName(s"instance$hashCode"))
+        // else start ignite node with unique name and default config
+        case None =>
+          Ignition.start(new IgniteConfiguration().setIgniteInstanceName(s"instance$hashCode"))
+      }
+  }
+
+  lazy val igniteCache: IgniteCache[Int, Any] = ignite.getOrCreateCache[Int, Any](IgniteMemoCacheBuilder.CACHE_NAME)
 
   override def getOrElseUpdate(key: Int, value: => Any): Any = {
     igniteCache.get(key) match {

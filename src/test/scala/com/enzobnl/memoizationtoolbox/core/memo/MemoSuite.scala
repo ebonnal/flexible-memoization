@@ -1,10 +1,13 @@
 package com.enzobnl.memoizationtoolbox.core.memo
 
 import com.enzobnl.memoizationtoolbox.caffeine.cache.CaffeineCacheBuilder
-import com.enzobnl.memoizationtoolbox.core.cache.MapCacheBuilder
+import com.enzobnl.memoizationtoolbox.core.cache.{Eviction, MapCacheBuilder}
 import com.enzobnl.memoizationtoolbox.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.memoizationtoolbox.util.Timeit
 import org.scalatest._
 import scalaz.Memo.mutableHashMapMemo
+
+import scala.util.Random
 
 
 class MemoSuite extends FlatSpec {
@@ -88,7 +91,7 @@ class MemoSuite extends FlatSpec {
     System.gc()
   }
   "fibo(20) caffeine memo" should "take 21 runs" in {
-    val caffeineMemo = new Memo(new CaffeineCacheBuilder().withMaxEntryNumber(Some(10000)))
+    val caffeineMemo = new Memo(new CaffeineCacheBuilder().withMaxEntryNumber(10000))
     lazy val caffeineMemoFibo: Int => Int = caffeineMemo(n => {
       i += 1
       println(f"fibo Caffeine run$i")
@@ -136,5 +139,107 @@ class MemoSuite extends FlatSpec {
     assert(i == 21)
   }
 
+  "bench between MapLRU, Caffeine and Ignite on small dataset" should
+    "give: " in {
+    val bench = (N: Int) => {
+      val maxSize = N / 100
+      val data: Seq[Int] = for (i <- 1 to N) yield i
+      val naiveIsPrime = (i: Int) => (2 to Math.sqrt(i).toInt + 1).dropWhile(i % _ != 0).nonEmpty
+      val mapF = new Memo(new MapCacheBuilder().withMaxEntryNumber(maxSize))(naiveIsPrime)
+      val caffeineF = new Memo(new CaffeineCacheBuilder().withMaxEntryNumber(maxSize))(naiveIsPrime)
+      val igniteCache = new IgniteMemoCacheBuilder().build()
+      val igniteF = new Memo(igniteCache)(naiveIsPrime)
+      val scalazF = scalaz.Memo.mutableHashMapMemo(naiveIsPrime)
+      val mapBench = Timeit.get(data.foreach(mapF))
+      val caffeineBench = Timeit.get(data.foreach(caffeineF))
+      val igniteBench = Timeit.get(data.foreach(igniteF))
+      val scalazBench = Timeit.get(data.foreach(scalazF))
+      println("BENCH cross frameworks:", N)
+      println(mapBench)
+      println(caffeineBench.toDouble / mapBench)
+      println(igniteBench.toDouble / mapBench)
+      println(scalazBench.toDouble / mapBench)
+      igniteCache.close()
+      println("passed close")
+      assert(igniteBench > mapBench)
+      assert(igniteBench > caffeineBench)
+      assert(mapBench > scalazBench)
+      assert(caffeineBench > scalazBench)
+      // scalaz is very fast because no eviction, caffeine faster than my scala
+    }
+    Seq(100, 1000).foreach(bench)
+  }
+
+  "COST bench between MapLRU, MapFIFO, and MapCost on isPrime" should
+    "give Cost winner, then LRU" in {
+    val bench = (N: Int, cacheSize: Int, rangeSize: Int) => {
+      val maxSize = N / 100
+      println("maxSize=", maxSize)
+      val data: Seq[Int] = for (i <- 1 to N) yield Random.nextLong().toInt % rangeSize*100
+      val naiveIsPrime = (i: Int) => (2 to Math.sqrt(i).toInt + 1).dropWhile(i % _ != 0).nonEmpty
+      val mapBuilder = new MapCacheBuilder().withMaxEntryNumber(maxSize)
+      val mapLRUf = new Memo(mapBuilder.withEviction(Eviction.LRU))(naiveIsPrime)
+      val mapFIFOf = new Memo(mapBuilder.withEviction(Eviction.FIFO))(naiveIsPrime)
+      val mapCostf = new Memo(mapBuilder.withEviction(Eviction.COST))(naiveIsPrime)
+
+      val mapBenchLRU = Timeit.get(data.foreach(mapLRUf))
+      val mapBenchFIFO = Timeit.get(data.foreach(mapFIFOf))
+      val mapBenchCOST = Timeit.get(data.foreach(mapCostf))
+      println("BENCH MAPS cost:", N, cacheSize, rangeSize)
+      println(mapBenchCOST)
+      println(mapBenchFIFO.toDouble / mapBenchCOST)
+      println(mapBenchLRU.toDouble / mapBenchCOST)
+//      assert(mapBenchCOST < mapBenchLRU && mapBenchLRU < mapBenchFIFO)
+      (mapBenchCOST.toDouble,  mapBenchLRU.toDouble/ mapBenchCOST, mapBenchFIFO.toDouble/ mapBenchCOST)
+    }
+    val n = 3
+    val results = (1 to n).foldLeft(Array(Seq[Double](), Seq[Double](), Seq[Double]()))((acc, _) => {
+      val res = bench(100000, 500, 1000)
+      Array(acc(0) :+ res._1, acc(1) :+ res._2, acc(2) :+ res._3)
+    })
+    val sums = results.map(_.sum)
+    val means = sums.map(_/n)
+    println("MEANS", means.toSeq)
+    assert(means(1)>1)
+    assert(means(2)>1)
+    assert(means(2)>means(1))
+  }
+  "HIT-RATIO bench between MapLRU, MapFIFO, and MapCost on isPrime" should
+    "give about 0.5 for everyone because input random in 2 times the size of caches" in {
+    val bench = (N: Int, cacheSize: Int, rangeSize: Int) => {
+      val maxSize = N / 100
+      println("maxSize=", maxSize)
+      val data: Seq[Int] = for (i <- 1 to N) yield Random.nextLong().toInt % rangeSize*100
+      val naiveIsPrime = (i: Int) => (2 to Math.sqrt(i).toInt + 1).dropWhile(i % _ != 0).nonEmpty
+      val mapBuilder = new MapCacheBuilder().withMaxEntryNumber(maxSize)
+      val mapLRUf = new Memo(mapBuilder.withEviction(Eviction.LRU))(naiveIsPrime)
+      val mapFIFOf = new Memo(mapBuilder.withEviction(Eviction.FIFO))(naiveIsPrime)
+      val mapCostf = new Memo(mapBuilder.withEviction(Eviction.COST))(naiveIsPrime)
+      data.foreach(mapLRUf)
+      data.foreach(mapFIFOf)
+      data.foreach(mapCostf)
+      val mapBenchLRU = mapLRUf.sharedCache.getHitRatio
+      val mapBenchFIFO = mapFIFOf.sharedCache.getHitRatio
+      val mapBenchCOST = mapCostf.sharedCache.getHitRatio
+      println("BENCH MAPS hit-ratio:", N, cacheSize, rangeSize)
+      println(mapBenchCOST)
+      println(mapBenchFIFO)
+      println(mapBenchLRU)
+      (mapBenchCOST,  mapBenchLRU, mapBenchFIFO)
+    }
+    val n = 3
+    val results = (1 to n).foldLeft(Array(Seq[Float](), Seq[Float](), Seq[Float]()))((acc, _) => {
+      val res = bench(100000, 500, 1000)
+      Array(acc(0) :+ res._1, acc(1) :+ res._2, acc(2) :+ res._3)
+    })
+    val sums = results.map(_.sum)
+    val means = sums.map(_/n)
+    println("MEANS", means.toSeq)
+
+    (0 to 2).foreach(n => {
+      assert(means(n)>0.45)
+      assert(means(n)<0.52)
+    })
+  }
 
 }

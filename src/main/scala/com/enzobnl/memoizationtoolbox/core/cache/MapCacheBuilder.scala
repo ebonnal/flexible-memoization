@@ -1,8 +1,6 @@
 package com.enzobnl.memoizationtoolbox.core.cache
 
-
 import com.enzobnl.memoizationtoolbox.core.cache.Eviction.Eviction
-
 
 
 /**
@@ -15,16 +13,16 @@ import com.enzobnl.memoizationtoolbox.core.cache.Eviction.Eviction
   *                   each time it reaches maxEntryNumber entries.
   */
 class MapCacheBuilder private(val evictionPolicy: Eviction,
-                              val maxEntryNumber: Long,
+                              val maxEntryNumber: Option[Long],
                               val removeRatio: Float) extends CacheBuilder {
 
-  def this() = this(Eviction.LRU, 10000, 0.05f)
+  def this() = this(Eviction.LRU, None, 0.05f)
 
-  def withEvictor(eviction: Eviction): MapCacheBuilder =
+  def withEviction(eviction: Eviction): MapCacheBuilder =
     new MapCacheBuilder(eviction, maxEntryNumber, removeRatio)
 
   def withMaxEntryNumber(size: Long): MapCacheBuilder =
-    new MapCacheBuilder(evictionPolicy, size, removeRatio)
+    new MapCacheBuilder(evictionPolicy, Some(size), removeRatio)
 
   def withRemoveRation(ratio: Float): MapCacheBuilder =
     new MapCacheBuilder(evictionPolicy, maxEntryNumber, ratio)

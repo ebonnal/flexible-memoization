@@ -1,9 +1,9 @@
 package com.enzobnl.memoizationtoolbox.ignite.cache
 
 import com.enzobnl.memoizationtoolbox.core.cache.{Cache, CacheBuilder}
+import com.enzobnl.memoizationtoolbox.ignite.cache.CacheMode.CacheMode
 import com.enzobnl.memoizationtoolbox.ignite.cache.OffHeapEviction.OffHeapEviction
 import com.enzobnl.memoizationtoolbox.ignite.cache.OnHeapEviction.OnHeapEviction
-import org.apache.ignite.cache.CacheMode
 import org.apache.ignite.cache.eviction.fifo.FifoEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.lru.LruEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.sorted.SortedEvictionPolicyFactory
@@ -16,40 +16,84 @@ import org.apache.ignite.configuration._
   * @param onHeapMaxSize         : in Bytes
   * @param offHeapMaxSize        : in Bytes
   * @param offHeapInitialSize    : in Bytes
-  * @param onHeapEvictionPolicy  : Policy used to move entries from on-heap to off-heap when on-heap
-  *                              reaches onHeapMaxSize.
-  * @param offHeapEvictionPolicy : Policy used to evict entries from off-heap when offHeapMaxSize reached.
+  * @param onHeapEvictionPolicy  : Policy used to move entries from on-heap to off-heap when
+  *                              on-heap reaches onHeapMaxSize.
+  * @param offHeapEvictionPolicy : Policy used to evict entries from off-heap when
+  *                              offHeapMaxSize reached.
+  * @param cacheMode: replication behavior
   */
 class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
                                      offHeapMaxSize: Option[Long],
                                      offHeapInitialSize: Option[Long],
                                      onHeapEvictionPolicy: OnHeapEviction,
-                                     offHeapEvictionPolicy: OffHeapEviction) extends CacheBuilder {
+                                     offHeapEvictionPolicy: OffHeapEviction,
+                                     cacheMode: CacheMode) extends CacheBuilder {
 
   def this() = this(
-    Some(1L * 1024 * 1024 * 1024),
-    Some(500L * 1024 * 1024),
+    None,
+    None,
     None,
     OnHeapEviction.LRU,
-    OffHeapEviction.RANDOM_2_LRU
+    OffHeapEviction.RANDOM_2_LRU,
+    CacheMode.PARTITIONED
   )
 
-  val igniteInstanceName = s"instance$hashCode" // One per IgniteCacheAdapterBuilder
-
-  def withOnHeapMaxSize(size: Option[Long]): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(size, offHeapMaxSize, offHeapInitialSize, onHeapEvictionPolicy, offHeapEvictionPolicy)
+  def withOnHeapMaxSize(size: Long): IgniteMemoCacheBuilder = {
+    new IgniteMemoCacheBuilder(
+      Some(size),
+      offHeapMaxSize,
+      offHeapInitialSize,
+      onHeapEvictionPolicy,
+      offHeapEvictionPolicy,
+      cacheMode)
   }
 
-  def withOffHeapMaxSize(size: Option[Long]): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(onHeapMaxSize, size, offHeapInitialSize, onHeapEvictionPolicy, offHeapEvictionPolicy)
+  def withOffHeapMaxSize(size: Long): IgniteMemoCacheBuilder = {
+    new IgniteMemoCacheBuilder(
+      onHeapMaxSize,
+      Some(size),
+      offHeapInitialSize,
+      onHeapEvictionPolicy,
+      offHeapEvictionPolicy,
+      cacheMode)
+  }
+  def withOffHeapInitialSize(size: Long): IgniteMemoCacheBuilder = {
+    new IgniteMemoCacheBuilder(
+      onHeapMaxSize,
+      offHeapMaxSize,
+      Some(size),
+      onHeapEvictionPolicy,
+      offHeapEvictionPolicy,
+      cacheMode)
   }
 
   def withOnHeapEviction(eviction: OnHeapEviction): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(onHeapMaxSize, offHeapMaxSize, offHeapInitialSize, eviction, offHeapEvictionPolicy)
+    new IgniteMemoCacheBuilder(
+      onHeapMaxSize,
+      offHeapMaxSize,
+      offHeapInitialSize,
+      eviction,
+      offHeapEvictionPolicy,
+      cacheMode)
   }
 
   def withOffHeapEviction(eviction: OffHeapEviction): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(onHeapMaxSize, offHeapMaxSize, offHeapInitialSize, onHeapEvictionPolicy, eviction)
+    new IgniteMemoCacheBuilder(
+      onHeapMaxSize,
+      offHeapMaxSize,
+      offHeapInitialSize,
+      onHeapEvictionPolicy,
+      eviction,
+      cacheMode)
+  }
+  def withCacheMode(mode: CacheMode): IgniteMemoCacheBuilder = {
+    new IgniteMemoCacheBuilder(
+      onHeapMaxSize,
+      offHeapMaxSize,
+      offHeapInitialSize,
+      onHeapEvictionPolicy,
+      offHeapEvictionPolicy,
+      mode)
   }
 
   override def build(): Cache = {
@@ -58,7 +102,7 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
     val regionCfg = new DataRegionConfiguration()
       .setName(IgniteMemoCacheBuilder.STORAGE_REGION_NAME)
 
-    this.offHeapInitialSize match {
+    offHeapInitialSize match {
       case Some(size) => regionCfg.setInitialSize(size) // 500 MB initial size (RAM).
       case None => ()
     }
@@ -79,7 +123,12 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
 
     val cacheConfig: CacheConfiguration[Long, Any] = new CacheConfiguration(IgniteMemoCacheBuilder.CACHE_NAME)
       .setOnheapCacheEnabled(true) // on heap cache backed by off-heap + eviction
-      .setCacheMode(CacheMode.PARTITIONED) // already default
+
+    cacheMode match {
+      case CacheMode.LOCAL => cacheConfig.setCacheMode(org.apache.ignite.cache.CacheMode.LOCAL)
+      case CacheMode.PARTITIONED => cacheConfig.setCacheMode(org.apache.ignite.cache.CacheMode.PARTITIONED)
+      case CacheMode.REPLICATED => cacheConfig.setCacheMode(org.apache.ignite.cache.CacheMode.REPLICATED)
+    }
 
     val evictionPolicyFactory = this.onHeapEvictionPolicy match {
       case OnHeapEviction.LRU =>
@@ -103,7 +152,6 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
       .setCacheConfiguration(cacheConfig)
       // ensures 2 nodes can be started on same JVM, thus close of one node triggered by end of use of*
       // one IgniteCacheAdapter still let others have their lives
-      .setIgniteInstanceName(this.igniteInstanceName)
       .setDataStorageConfiguration(storageCfg)
 
     new IgniteCacheAdapter(icf)

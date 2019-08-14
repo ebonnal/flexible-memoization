@@ -8,20 +8,21 @@ class EvictionSuite extends FlatSpec {
     val cache: FIFOEvictorMapCacheAdapter =
       new MapCacheBuilder()
         .withMaxEntryNumber(2)
-        .withEvictor(Eviction.FIFO)
+        .withEviction(Eviction.FIFO)
         .build()
         .asInstanceOf[FIFOEvictorMapCacheAdapter]
     cache.getOrElseUpdate(1, "a")
     cache.getOrElseUpdate(2, "b")
+    cache.getOrElseUpdate(2, "b")
+    cache.getOrElseUpdate(1, "a")
     cache.getOrElseUpdate(3, "c")
-    cache.getOrElseUpdate(4, "d")
-    println(cache.map == Map(3->"c", 4->"d"))
+    assert(cache.map.keys == Set(2,3))
   }
   "Lru with 2 entries max, on keys stream <<-(1,2,2,1,3)<<-" should "give (3,1)" in {
     val cache: LRUEvictorMapCacheAdapter =
       new MapCacheBuilder()
         .withMaxEntryNumber(2)
-        .withEvictor(Eviction.LRU)
+        .withEviction(Eviction.LRU)
         .build()
         .asInstanceOf[LRUEvictorMapCacheAdapter]
     cache.getOrElseUpdate(1, "a")
@@ -29,21 +30,26 @@ class EvictionSuite extends FlatSpec {
     cache.getOrElseUpdate(2, "b")
     cache.getOrElseUpdate(1, "a")
     cache.getOrElseUpdate(3, "c")
-    println(cache.map ==  Map(1->"a", 3->"c"))
+    assert(cache.map.keys ==  Set(1, 3))
   }
   "Cost with 2 entries max, on keys stream <<-(1,2,2,1,3)<<-" should "give (3,1)" in {
-    val cache: LRUEvictorMapCacheAdapter =
+    val cache: CostEvictorMapCacheAdapter =
       new MapCacheBuilder()
         .withMaxEntryNumber(2)
-        .withEvictor(Eviction.LRU)
+        .withEviction(Eviction.COST)
         .build()
-        .asInstanceOf[LRUEvictorMapCacheAdapter]
-    cache.getOrElseUpdate(1, "a")
-    cache.getOrElseUpdate({Thread.sleep(500); 2}, "b")
+        .asInstanceOf[CostEvictorMapCacheAdapter]
+    cache.getOrElseUpdate(1, {Thread.sleep(10); "a"})
+
     cache.getOrElseUpdate(2, "b")
+
+    cache.getOrElseUpdate(2, "b")
+
     cache.getOrElseUpdate(1, "a")
-    cache.getOrElseUpdate({Thread.sleep(300); 3}, "c")
+
+    cache.getOrElseUpdate(3, "c")
+
     cache.getOrElseUpdate(4, "d")
-    println(cache.map ==  Map(2->"b", 4->"d"))
+    assert(cache.map.keys ==  Set(1, 4))
   }
 }

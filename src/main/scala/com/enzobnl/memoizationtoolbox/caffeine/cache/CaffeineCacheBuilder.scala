@@ -10,8 +10,8 @@ import com.enzobnl.memoizationtoolbox.core.cache.{Cache, CacheBuilder}
 class CaffeineCacheBuilder private(maxEntryNumber: Option[Long]) extends CacheBuilder {
   def this() = this(None)
 
-  def withMaxEntryNumber(number: Option[Long]): CaffeineCacheBuilder =
-    new CaffeineCacheBuilder(number)
+  def withMaxEntryNumber(number: Long): CaffeineCacheBuilder =
+    new CaffeineCacheBuilder(Some(number))
 
   override def build(): Cache = maxEntryNumber match {
     case Some(number) => new CaffeineCacheAdapter(number)
