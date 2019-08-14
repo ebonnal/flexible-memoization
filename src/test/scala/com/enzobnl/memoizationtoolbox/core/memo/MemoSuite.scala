@@ -175,7 +175,7 @@ class MemoSuite extends FlatSpec {
     val bench = (N: Int, cacheSize: Int, rangeSize: Int) => {
       val maxSize = N / 100
       println("maxSize=", maxSize)
-      val data: Seq[Int] = for (i <- 1 to N) yield Random.nextLong().toInt % rangeSize*100
+      val data: Seq[Int] = for (_ <- 1 to N) yield Random.nextLong().toInt % rangeSize * 100
       val naiveIsPrime = (i: Int) => (2 to Math.sqrt(i).toInt + 1).dropWhile(i % _ != 0).nonEmpty
       val mapBuilder = new MapCacheBuilder().withMaxEntryNumber(maxSize)
       val mapLRUf = new Memo(mapBuilder.withEviction(Eviction.LRU))(naiveIsPrime)
@@ -189,8 +189,8 @@ class MemoSuite extends FlatSpec {
       println(mapBenchCOST)
       println(mapBenchFIFO.toDouble / mapBenchCOST)
       println(mapBenchLRU.toDouble / mapBenchCOST)
-//      assert(mapBenchCOST < mapBenchLRU && mapBenchLRU < mapBenchFIFO)
-      (mapBenchCOST.toDouble,  mapBenchLRU.toDouble/ mapBenchCOST, mapBenchFIFO.toDouble/ mapBenchCOST)
+      //      assert(mapBenchCOST < mapBenchLRU && mapBenchLRU < mapBenchFIFO)
+      (mapBenchCOST.toDouble, mapBenchLRU.toDouble / mapBenchCOST, mapBenchFIFO.toDouble / mapBenchCOST)
     }
     val n = 3
     val results = (1 to n).foldLeft(Array(Seq[Double](), Seq[Double](), Seq[Double]()))((acc, _) => {
@@ -198,18 +198,18 @@ class MemoSuite extends FlatSpec {
       Array(acc(0) :+ res._1, acc(1) :+ res._2, acc(2) :+ res._3)
     })
     val sums = results.map(_.sum)
-    val means = sums.map(_/n)
+    val means = sums.map(_ / n)
     println("MEANS", means.toSeq)
-    assert(means(1)>1)
-    assert(means(2)>1)
-    assert(means(2)>means(1))
+    assert(means(1) > 1)
+    assert(means(2) > 1)
+    assert(means(2) > means(1))
   }
   "HIT-RATIO bench between MapLRU, MapFIFO, and MapCost on isPrime" should
     "give about 0.5 for everyone because input random in 2 times the size of caches" in {
     val bench = (N: Int, cacheSize: Int, rangeSize: Int) => {
       val maxSize = N / 100
       println("maxSize=", maxSize)
-      val data: Seq[Int] = for (i <- 1 to N) yield Random.nextLong().toInt % rangeSize*100
+      val data: Seq[Int] = for (_ <- 1 to N) yield Random.nextLong().toInt % rangeSize * 100
       val naiveIsPrime = (i: Int) => (2 to Math.sqrt(i).toInt + 1).dropWhile(i % _ != 0).nonEmpty
       val mapBuilder = new MapCacheBuilder().withMaxEntryNumber(maxSize)
       val mapLRUf = new Memo(mapBuilder.withEviction(Eviction.LRU))(naiveIsPrime)
@@ -225,7 +225,7 @@ class MemoSuite extends FlatSpec {
       println(mapBenchCOST)
       println(mapBenchFIFO)
       println(mapBenchLRU)
-      (mapBenchCOST,  mapBenchLRU, mapBenchFIFO)
+      (mapBenchCOST, mapBenchLRU, mapBenchFIFO)
     }
     val n = 3
     val results = (1 to n).foldLeft(Array(Seq[Float](), Seq[Float](), Seq[Float]()))((acc, _) => {
@@ -233,12 +233,12 @@ class MemoSuite extends FlatSpec {
       Array(acc(0) :+ res._1, acc(1) :+ res._2, acc(2) :+ res._3)
     })
     val sums = results.map(_.sum)
-    val means = sums.map(_/n)
+    val means = sums.map(_ / n)
     println("MEANS", means.toSeq)
 
     (0 to 2).foreach(n => {
-      assert(means(n)>0.45)
-      assert(means(n)<0.52)
+      assert(means(n) > 0.45)
+      assert(means(n) < 0.52)
     })
   }
 

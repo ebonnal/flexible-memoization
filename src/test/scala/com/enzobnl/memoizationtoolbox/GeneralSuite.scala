@@ -39,6 +39,7 @@ class GeneralSuite extends FlatSpec {
     }
 
     spark.udf.register("f", mapMemoFibo)
+    import org.apache.spark.sql.functions.udf
     assert(spark.createDataFrame(for (i <- 1 to 20) yield Tuple1(i))
       .toDF("n")
       .selectExpr("f(n)")

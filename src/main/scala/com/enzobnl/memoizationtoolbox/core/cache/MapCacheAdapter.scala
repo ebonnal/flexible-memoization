@@ -17,7 +17,8 @@ private[cache] class FIFOEvictorMapCacheAdapter(val maxEntryNumber: Option[Long]
   // key FIFO, in right, out left
   var fifoList: List[Int] = List[Int]()
   // key -> value map
-  val map: mutable.Map[Int, Any] = mutable.Map[Int, Any]()
+  val map: mutable.Map[Int, Any] with mutable.SynchronizedMap[Int, Any] =
+    new mutable.HashMap[Int, Any]() with mutable.SynchronizedMap[Int, Any]
 
   override def getOrElseUpdate(hash: Int, value: => Any): Any = {
     var computed = false
@@ -61,7 +62,8 @@ private[cache] class LRUEvictorMapCacheAdapter(val maxEntryNumber: Option[Long],
   var sortedSetOnTimeStamp: immutable.SortedSet[SortedSetEntry] =
     immutable.SortedSet[SortedSetEntry]()(ByToSortOn)
   // key -> ((timestamp, key), value) map
-  val map: mutable.Map[Int, (SortedSetEntry, Any)] = mutable.Map[Int, (SortedSetEntry, Any)]()
+  val map: mutable.Map[Int, (SortedSetEntry, Any)] with mutable.SynchronizedMap[Int, (SortedSetEntry, Any)] =
+    new mutable.HashMap[Int, (SortedSetEntry, Any)]() with mutable.SynchronizedMap[Int, (SortedSetEntry, Any)]
 
   override def getOrElseUpdate(hash: Int, value: => Any): Any = {
     var computed = false
@@ -110,7 +112,8 @@ private[cache] class CostEvictorMapCacheAdapter(val maxEntryNumber: Option[Long]
 
   val removeThreshold: Double = maxEntryNumber.getOrElse(0L) * (1 - removeRatio)
   var sortedSetOnCost: immutable.SortedSet[SortedSetEntry] = immutable.SortedSet[SortedSetEntry]()(ByToSortOn)
-  val map: mutable.Map[Int, Any] = mutable.Map[Int, Any]()
+  val map: mutable.Map[Int, Any] with mutable.SynchronizedMap[Int, Any] =
+    new mutable.HashMap[Int, Any]() with mutable.SynchronizedMap[Int, Any]
 
   override def getOrElseUpdate(hash: Int, value: => Any): Any = {
     var computed = false
