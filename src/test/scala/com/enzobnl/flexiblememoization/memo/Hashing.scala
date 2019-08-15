@@ -1,11 +1,10 @@
 package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
-import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
 import org.scalatest._
 
-import scala.collection.{Iterable, mutable}
 import scala.collection.immutable.SortedSet
+import scala.collection.{Iterable, mutable}
 
 
 class Hashing extends FlatSpec {

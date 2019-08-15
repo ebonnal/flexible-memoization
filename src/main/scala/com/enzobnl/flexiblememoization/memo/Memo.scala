@@ -2,17 +2,14 @@ package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
 import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
-import com.enzobnl.flexiblememoization.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
 import com.enzobnl.flexiblememoization.cache.{Cache, CacheBuilder}
-import org.apache.spark.sql.SparkSession
 
 import scala.collection.Iterable
 
 
 /**
   * Core class of the framework.
-  *
-  * @param cache : default is set to new core.cache.MapCacheBuilder().build()
+  * @param cache : cache.Cache instance, taken as a Strategy Pattern dependency injection.
   */
 class Memo(cache: Cache) extends Memoizer {
   def this() = this(Memo.DEFAULT_CACHE)
