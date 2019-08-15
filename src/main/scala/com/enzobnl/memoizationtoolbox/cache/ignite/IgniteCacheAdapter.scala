@@ -1,6 +1,6 @@
-package com.enzobnl.memoizationtoolbox.ignite.cache
+package com.enzobnl.memoizationtoolbox.cache.ignite
 
-import com.enzobnl.memoizationtoolbox.core.cache.Cache
+import com.enzobnl.memoizationtoolbox.cache.Cache
 import org.apache.ignite.configuration.IgniteConfiguration
 import org.apache.ignite.{Ignite, IgniteCache, Ignition}
 

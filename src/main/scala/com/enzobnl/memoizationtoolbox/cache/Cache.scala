@@ -1,4 +1,4 @@
-package com.enzobnl.memoizationtoolbox.core.cache
+package com.enzobnl.memoizationtoolbox.cache
 
 /**
   * Mimic the usefull getOrElseUpdate method from mutable.Map

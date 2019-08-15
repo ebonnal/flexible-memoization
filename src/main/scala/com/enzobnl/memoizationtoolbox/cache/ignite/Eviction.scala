@@ -1,4 +1,4 @@
-package com.enzobnl.memoizationtoolbox.ignite.cache
+package com.enzobnl.memoizationtoolbox.cache.ignite
 
 object OnHeapEviction extends Enumeration {
   type OnHeapEviction = Value

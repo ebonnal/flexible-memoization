@@ -1,5 +1,6 @@
-package com.enzobnl.memoizationtoolbox.core.cache
+package com.enzobnl.memoizationtoolbox.cache
 
+import com.enzobnl.memoizationtoolbox.cache.map.{CostEvictorMapCacheAdapter, Eviction, FIFOEvictorMapCacheAdapter, LRUEvictorMapCacheAdapter, MapCacheBuilder}
 import org.scalatest.FlatSpec
 
 

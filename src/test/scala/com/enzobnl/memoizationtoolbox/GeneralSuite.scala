@@ -1,8 +1,8 @@
 package com.enzobnl.memoizationtoolbox
 
-import com.enzobnl.memoizationtoolbox.core.cache.MapCacheBuilder
-import com.enzobnl.memoizationtoolbox.core.memo.Memo
-import com.enzobnl.memoizationtoolbox.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.memoizationtoolbox.memo.Memo
+import com.enzobnl.memoizationtoolbox.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.memoizationtoolbox.cache.map.MapCacheBuilder
 import com.enzobnl.memoizationtoolbox.util.QuickSparkSessionFactory
 import org.apache.spark.sql.SparkSession
 import org.scalatest.FlatSpec

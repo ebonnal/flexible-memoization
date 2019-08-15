@@ -1,6 +1,6 @@
-package com.enzobnl.memoizationtoolbox.core.memo
+package com.enzobnl.memoizationtoolbox.memo
 
-import com.enzobnl.memoizationtoolbox.core.cache.Cache
+import com.enzobnl.memoizationtoolbox.cache.Cache
 
 /**
   * Mixin mixed in FunctionX anonymous class implementation returned by Memoizer 'applies' methods.
@@ -47,5 +47,9 @@ trait Memoizer {
   def apply[I1, I2, R](f: (I1, I2) => R): MemoizedFunc with ((I1, I2) => R)
 
   def apply[I1, I2, R](f: (I1, I2) => R, trigger: (I1, I2) => Boolean): MemoizedFunc with ((I1, I2) => R)
+
+  def apply[I1, I2, I3, R](f: (I1, I2, I3) => R): MemoizedFunc with ((I1, I2, I3) => R)
+
+  def apply[I1, I2, I3, R](f: (I1, I2, I3) => R, trigger: (I1, I2, I3) => Boolean): MemoizedFunc with ((I1, I2, I3) => R)
 
 }

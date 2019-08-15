@@ -1,4 +1,4 @@
-package com.enzobnl.memoizationtoolbox.core.cache
+package com.enzobnl.memoizationtoolbox.cache.map
 
 object Eviction extends Enumeration {
   type Eviction = Value

@@ -1,6 +1,6 @@
-package com.enzobnl.memoizationtoolbox.caffeine.cache
+package com.enzobnl.memoizationtoolbox.cache.caffeine
 
-import com.enzobnl.memoizationtoolbox.core.cache.Cache
+import com.enzobnl.memoizationtoolbox.cache.Cache
 import com.github.blemale.scaffeine.Scaffeine
 
 /**

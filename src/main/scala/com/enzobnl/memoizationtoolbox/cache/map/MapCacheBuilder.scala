@@ -1,6 +1,7 @@
-package com.enzobnl.memoizationtoolbox.core.cache
+package com.enzobnl.memoizationtoolbox.cache.map
 
-import com.enzobnl.memoizationtoolbox.core.cache.Eviction.Eviction
+import Eviction.Eviction
+import com.enzobnl.memoizationtoolbox.cache.{Cache, CacheBuilder}
 
 
 /**

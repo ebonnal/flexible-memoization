@@ -1,8 +1,8 @@
-package com.enzobnl.memoizationtoolbox.core.memo
+package com.enzobnl.memoizationtoolbox.memo
 
-import com.enzobnl.memoizationtoolbox.caffeine.cache.CaffeineCacheBuilder
-import com.enzobnl.memoizationtoolbox.core.cache.{Eviction, MapCacheBuilder}
-import com.enzobnl.memoizationtoolbox.ignite.cache.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.memoizationtoolbox.cache.caffeine.CaffeineCacheBuilder
+import com.enzobnl.memoizationtoolbox.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.memoizationtoolbox.cache.map.{Eviction, MapCacheBuilder}
 import com.enzobnl.memoizationtoolbox.util.Timeit
 import org.scalatest._
 import scalaz.Memo.mutableHashMapMemo
@@ -27,7 +27,7 @@ class MemoSuite extends FlatSpec {
 
     val memo2 = new Memo(memoCache)
     val memoizedf2 = memo2(f)
-    for (i <- 1 to 10) memoizedf2(i % 3)
+    for (i <- 1 to 10) println(memoizedf2(i % 3), i % 3, Memo.getHashCode(i % 3))
     assert(memoCache.getHitsAndMisses == (17, 3)) // 3 17
 
     val memoCacheMap = new MapCacheBuilder().build()
