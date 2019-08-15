@@ -1,7 +1,7 @@
-package com.enzobnl.memoizationtoolbox.cache.map
+package com.enzobnl.flexiblememoization.cache.map
 
 import Eviction.Eviction
-import com.enzobnl.memoizationtoolbox.cache.{Cache, CacheBuilder}
+import com.enzobnl.flexiblememoization.cache.{Cache, CacheBuilder}
 
 
 /**

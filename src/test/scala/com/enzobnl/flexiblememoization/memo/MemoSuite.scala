@@ -1,9 +1,9 @@
-package com.enzobnl.memoizationtoolbox.memo
+package com.enzobnl.flexiblememoization.memo
 
-import com.enzobnl.memoizationtoolbox.cache.caffeine.CaffeineCacheBuilder
-import com.enzobnl.memoizationtoolbox.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
-import com.enzobnl.memoizationtoolbox.cache.map.{Eviction, MapCacheBuilder}
-import com.enzobnl.memoizationtoolbox.util.Timeit
+import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
+import com.enzobnl.flexiblememoization.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.flexiblememoization.cache.map.{Eviction, MapCacheBuilder}
+import com.enzobnl.flexiblememoization.util.Timeit
 import org.scalatest._
 import scalaz.Memo.mutableHashMapMemo
 

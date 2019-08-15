@@ -1,7 +1,7 @@
-package com.enzobnl.memoizationtoolbox.cache.map
+package com.enzobnl.flexiblememoization.cache.map
 
-import com.enzobnl.memoizationtoolbox.cache.Cache
-import com.enzobnl.memoizationtoolbox.util.Timeit
+import com.enzobnl.flexiblememoization.cache.Cache
+import com.enzobnl.flexiblememoization.util.Timeit
 
 import scala.collection.{immutable, mutable}
 

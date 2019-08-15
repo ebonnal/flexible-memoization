@@ -1,4 +1,4 @@
-# memoization-toolbox
+# flexibleme-moization
 Toolbox with intuitive API making memoization of arbitrary deterministic functions straight forward.
 
 - Different degrees of *scalability*: from **local** use cases to big data jobs **on clusters** (powered by [Apache Ignite](https://github.com/apache/ignite)).

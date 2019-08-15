@@ -1,11 +1,12 @@
-package com.enzobnl.memoizationtoolbox.memo
+package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
-import com.enzobnl.memoizationtoolbox.cache.caffeine.CaffeineCacheBuilder
-import com.enzobnl.memoizationtoolbox.cache.{Cache, CacheBuilder}
+import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
+import com.enzobnl.flexiblememoization.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.flexiblememoization.cache.{Cache, CacheBuilder}
+import org.apache.spark.sql.SparkSession
 
-import scala.collection.immutable.SortedSet
-import scala.collection.{Iterable, mutable}
+import scala.collection.Iterable
 
 
 /**

@@ -1,6 +1,6 @@
-package com.enzobnl.memoizationtoolbox.memo
+package com.enzobnl.flexiblememoization.memo
 
-import com.enzobnl.memoizationtoolbox.cache.Cache
+import com.enzobnl.flexiblememoization.cache.Cache
 
 /**
   * Mixin mixed in FunctionX anonymous class implementation returned by Memoizer 'applies' methods.

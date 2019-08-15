@@ -1,7 +1,7 @@
-package com.enzobnl.memoizationtoolbox.memo
+package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
-import com.enzobnl.memoizationtoolbox.cache.caffeine.CaffeineCacheBuilder
+import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
 import org.scalatest._
 
 import scala.collection.{Iterable, mutable}

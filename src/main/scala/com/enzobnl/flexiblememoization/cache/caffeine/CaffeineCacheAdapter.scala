@@ -1,6 +1,6 @@
-package com.enzobnl.memoizationtoolbox.cache.caffeine
+package com.enzobnl.flexiblememoization.cache.caffeine
 
-import com.enzobnl.memoizationtoolbox.cache.Cache
+import com.enzobnl.flexiblememoization.cache.Cache
 import com.github.blemale.scaffeine.Scaffeine
 
 /**
@@ -10,7 +10,7 @@ import com.github.blemale.scaffeine.Scaffeine
   * It is not part of the public API: Client must use CaffeineCacheAdapterBuilder to instanciate it.
   * @param scaffeine: scala wrapper around caffeine.cache.Caffeine[K, V]
   */
-private class CaffeineCacheAdapter(scaffeine: Scaffeine[Any, Any]) extends Cache {
+private[flexiblememoization] class CaffeineCacheAdapter(scaffeine: Scaffeine[Any, Any]) extends Cache {
   def this(maxEntryNumber: Long) = this(Scaffeine().maximumSize(maxEntryNumber))
 
   def this() = this(Scaffeine())

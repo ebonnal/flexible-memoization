@@ -1,4 +1,4 @@
-package com.enzobnl.memoizationtoolbox.cache
+package com.enzobnl.flexiblememoization.cache
 
 /**
   * Mimic the usefull getOrElseUpdate method from mutable.Map
@@ -15,7 +15,7 @@ trait ClosableMixin {
   * notifyDependencyEnd methods.
   */
 trait NotifiableMixin extends ClosableMixin {
-  private var nSubjects: Int = 0
+  private[flexiblememoization] var nSubjects: Int = 0
 
   def notifyDependencyStart(): Unit = nSubjects += 1
 
@@ -34,8 +34,8 @@ trait NotifiableMixin extends ClosableMixin {
   * Define two counters for hits and misses and provide access to their tuple and hit ratio.
   */
 trait HitCounterMixin {
-  protected[cache] var hits = 0L
-  protected[cache] var misses = 0L
+  protected[flexiblememoization] var hits = 0L
+  protected[flexiblememoization] var misses = 0L
 
   def getHitsAndMisses: (Long, Long) = (hits, misses)
   def getHitRatio: Float = hits.toFloat/(hits + misses)

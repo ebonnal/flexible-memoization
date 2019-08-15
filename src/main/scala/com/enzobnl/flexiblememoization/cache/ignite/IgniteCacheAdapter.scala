@@ -1,6 +1,6 @@
-package com.enzobnl.memoizationtoolbox.cache.ignite
+package com.enzobnl.flexiblememoization.cache.ignite
 
-import com.enzobnl.memoizationtoolbox.cache.Cache
+import com.enzobnl.flexiblememoization.cache.Cache
 import org.apache.ignite.configuration.IgniteConfiguration
 import org.apache.ignite.{Ignite, IgniteCache, Ignition}
 
@@ -13,7 +13,7 @@ import org.apache.ignite.{Ignite, IgniteCache, Ignition}
   * @param node : Ignite instance lazy param, can be derived from IgniteConfiguration
   *             by alternative constructor
   */
-private class IgniteCacheAdapter(icf: Option[IgniteConfiguration],
+private[flexiblememoization] class IgniteCacheAdapter(icf: Option[IgniteConfiguration],
                                  node: => Option[Ignite]) extends Cache {
 
   def this(providedIgnite: => Ignite) = this(None, Some(providedIgnite))
