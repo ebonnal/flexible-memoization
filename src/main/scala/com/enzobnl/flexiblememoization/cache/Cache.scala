@@ -21,13 +21,8 @@ trait NotifiableMixin extends ClosableMixin {
 
   def notifyDependencyEnd(): Unit = {
     nSubjects -= 1
-    tryToClose()
+    if (nSubjects == 0) close()  
   }
-
-  /**
-    * If there is no more subjects observed, close
-    */
-  def tryToClose(): Unit = if (nSubjects == 0) close()
 }
 
 /**
