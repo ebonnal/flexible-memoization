@@ -1,5 +1,6 @@
 package com.enzobnl.flexiblememoization
 
+import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import com.enzobnl.flexiblememoization.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
 import com.enzobnl.flexiblememoization.cache.map.MapCacheBuilder
 import com.enzobnl.flexiblememoization.memo.Memo
@@ -43,13 +44,13 @@ class GeneralSuite extends FlatSpec {
       .selectExpr("f(n)")
       .collect().last.getAs[Int](0) == 10946
     )
-    assert((37, 21) == mapCache.getHitsAndMisses)
+    assert((37, 21) == mapCache.asInstanceOf[HitCounterMixin].getHitsAndMisses)
     assert(spark.createDataFrame(for (i <- 1 to 20) yield Tuple1(i))
       .toDF("n")
       .selectExpr("f(n)")
       .collect().last.getAs[Int](0) == 10946
     )
-    assert((57, 21) == mapCache.getHitsAndMisses)
+    assert((57, 21) == mapCache.asInstanceOf[HitCounterMixin].getHitsAndMisses)
 
   }
   "2 different ignite caches on two different ignite nodes used in two different Memos for THE SAME func" should
@@ -84,15 +85,15 @@ class GeneralSuite extends FlatSpec {
       .selectExpr("f(n, m)")
       .collect().last.getAs[Int](0) == 40000
     )
-//    assert(igniteCache1.getHitsAndMisses == (0, 200))
+//    assert(igniteCache1.asInstanceOf[HitCounterMixin].getHitsAndMisses == (0, 200))
     spark.udf.register("f", mf2)
     assert(spark.createDataFrame(for (i <- 1 to 200) yield Tuple2(i, i))
       .toDF("n", "m")
       .selectExpr("f(n, m)").rdd
       .collect().last.getAs[Int](0) == 40000
     )
-    println("SHARE AMONG JOBS:", igniteCache2.getHitsAndMisses)
-    assert(igniteCache2.getHitsAndMisses == (200, 0))
+    println("SHARE AMONG JOBS:", igniteCache2.asInstanceOf[HitCounterMixin].getHitsAndMisses)
+    assert(igniteCache2.asInstanceOf[HitCounterMixin].getHitsAndMisses == (200, 0))
     spark.stop()
     //    System.gc()
   }

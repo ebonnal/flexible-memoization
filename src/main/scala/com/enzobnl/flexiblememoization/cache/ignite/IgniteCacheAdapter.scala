@@ -1,5 +1,6 @@
 package com.enzobnl.flexiblememoization.cache.ignite
 
+import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import com.enzobnl.flexiblememoization.cache.Cache
 import org.apache.ignite.configuration.IgniteConfiguration
 import org.apache.ignite.{Ignite, IgniteCache, Ignition}
@@ -14,7 +15,7 @@ import org.apache.ignite.{Ignite, IgniteCache, Ignition}
   *             by alternative constructor
   */
 private[flexiblememoization] class IgniteCacheAdapter(icf: Option[IgniteConfiguration],
-                                 node: => Option[Ignite]) extends Cache {
+                                 node: => Option[Ignite]) extends Cache with HitCounterMixin {
 
   def this(providedIgnite: => Ignite) = this(None, Some(providedIgnite))
 

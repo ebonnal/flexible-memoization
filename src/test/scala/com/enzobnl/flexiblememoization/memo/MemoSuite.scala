@@ -1,5 +1,6 @@
 package com.enzobnl.flexiblememoization.memo
 
+import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
 import com.enzobnl.flexiblememoization.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
 import com.enzobnl.flexiblememoization.cache.map.{Eviction, MapCacheBuilder}
@@ -22,21 +23,21 @@ class MemoSuite extends FlatSpec {
     val f = (i: Int) => i * 4
     val memoizedf = memo(f)
     for (i <- 1 to 10) memoizedf(i % 3)
-    assert(memoCache.getHitsAndMisses == (7, 3)) // 3 7
+    assert(memoCache.asInstanceOf[HitCounterMixin].getHitsAndMisses == (7, 3)) // 3 7
 
 
     val memo2 = new Memo(memoCache)
     val memoizedf2 = memo2(f)
     for (i <- 1 to 10) println(memoizedf2(i % 3), i % 3, Memo.getHashCode(i % 3))
-    assert(memoCache.getHitsAndMisses == (17, 3)) // 3 17
+    assert(memoCache.asInstanceOf[HitCounterMixin].getHitsAndMisses == (17, 3)) // 3 17
 
     val memoCacheMap = new MapCacheBuilder().build()
     val memo3 = new Memo(memoCacheMap)
     for (i <- 1 to 10) memo3(f)(i % 3)
-    assert(memoCacheMap.getHitsAndMisses == (7, 3)) // 3 7
+    assert(memoCacheMap.asInstanceOf[HitCounterMixin].getHitsAndMisses == (7, 3)) // 3 7
     val memoized3 = memo3(f)
     for (i <- 1 to 10) memoized3(i % 3)
-    assert(memoCacheMap.getHitsAndMisses == (17, 3)) // 3,17
+    assert(memoCacheMap.asInstanceOf[HitCounterMixin].getHitsAndMisses == (17, 3)) // 3,17
   }
   "cache access condition (I1, I2) => R" should "give consistent hits and misses" in {
     val cache = new MapCacheBuilder().build()
@@ -44,7 +45,7 @@ class MemoSuite extends FlatSpec {
     val condition = (i: Int, j: Int) => i == j
     val memoized = new Memo(cache)(f, condition)
     for (i <- 1 to 20; j <- 1 to 20) memoized(i, j)
-    assert(cache.getHitsAndMisses._2 == 20)
+    assert(cache.asInstanceOf[HitCounterMixin].getHitsAndMisses._2 == 20)
   }
   "cache access condition on I => R" should "give consistent hits and misses" in {
     val cache = new MapCacheBuilder().build()
@@ -52,7 +53,7 @@ class MemoSuite extends FlatSpec {
     val condition = (i: Int) => i > 10
     val memoized = new Memo(cache)(f, condition)
     (1 to 20).map(memoized)
-    assert(cache.getHitsAndMisses._2 == 10)
+    assert(cache.asInstanceOf[HitCounterMixin].getHitsAndMisses._2 == 10)
   }
   var i = 0
 
@@ -218,9 +219,9 @@ class MemoSuite extends FlatSpec {
       data.foreach(mapLRUf)
       data.foreach(mapFIFOf)
       data.foreach(mapCostf)
-      val mapBenchLRU = mapLRUf.sharedCache.getHitRatio
-      val mapBenchFIFO = mapFIFOf.sharedCache.getHitRatio
-      val mapBenchCOST = mapCostf.sharedCache.getHitRatio
+      val mapBenchLRU = mapLRUf.sharedCache.asInstanceOf[HitCounterMixin].getHitRatio
+      val mapBenchFIFO = mapFIFOf.sharedCache.asInstanceOf[HitCounterMixin].getHitRatio
+      val mapBenchCOST = mapCostf.sharedCache.asInstanceOf[HitCounterMixin].getHitRatio
       println("BENCH MAPS hit-ratio:", N, cacheSize, rangeSize)
       println(mapBenchCOST)
       println(mapBenchFIFO)

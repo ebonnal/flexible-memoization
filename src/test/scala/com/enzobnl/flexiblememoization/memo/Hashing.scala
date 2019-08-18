@@ -1,6 +1,7 @@
 package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
+import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import org.scalatest._
 
 import scala.collection.immutable.SortedSet
@@ -43,7 +44,7 @@ class Hashing extends FlatSpec {
     memoizedf1(1)
     memoizedf2(1)
     memoizedf3(1)
-    assert(memoizedf1.sharedCache.getHitsAndMisses == (1, 2))
+    assert(memoizedf1.sharedCache.asInstanceOf[HitCounterMixin].getHitsAndMisses == (1, 2))
   }
 
   "2 different references for the same func, passing through different" +
@@ -52,7 +53,7 @@ class Hashing extends FlatSpec {
     val mf2 = new Memo()((g: Int=>Int, iterable: Iterable[Int], s: Set[Int]) => s.contains(iterable.map(g).last))
     mf1((i: Int)=> i*2, mutable.LinkedList(1,2), Set(1,2))
     mf2((x: Int)=> x*2, Array(1,2), SortedSet(1,2))
-    println(mf1.sharedCache.getHitsAndMisses, (1, 1))
+    println(mf1.sharedCache.asInstanceOf[HitCounterMixin].getHitsAndMisses, (1, 1))
   }
 
 

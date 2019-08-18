@@ -1,5 +1,6 @@
 package com.enzobnl.flexiblememoization.cache.map
 
+import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import com.enzobnl.flexiblememoization.cache.Cache
 import com.enzobnl.flexiblememoization.util.Timeit
 
@@ -12,7 +13,7 @@ private[cache] object ByToSortOn extends Ordering[SortedSetEntry] {
 }
 
 private[cache] class FIFOEvictorMapCacheAdapter(val maxEntryNumber: Option[Long],
-                                                val removeRatio: Float) extends Cache {
+                                                val removeRatio: Float) extends Cache with HitCounterMixin{
 
   val removeThreshold: Double = maxEntryNumber.getOrElse(0L) * (1 - removeRatio)
   // key FIFO, in right, out left
@@ -55,7 +56,8 @@ private[cache] class FIFOEvictorMapCacheAdapter(val maxEntryNumber: Option[Long]
 }
 
 
-private[cache] class LRUEvictorMapCacheAdapter(val maxEntryNumber: Option[Long], val removeRatio: Float) extends Cache {
+private[cache] class LRUEvictorMapCacheAdapter(val maxEntryNumber: Option[Long],
+                                               val removeRatio: Float) extends Cache with HitCounterMixin{
 
 
   val removeThreshold: Double = maxEntryNumber.getOrElse(0L) * (1 - removeRatio)
@@ -108,7 +110,7 @@ private[cache] class LRUEvictorMapCacheAdapter(val maxEntryNumber: Option[Long],
 }
 
 private[cache] class CostEvictorMapCacheAdapter(val maxEntryNumber: Option[Long],
-                                                val removeRatio: Float) extends Cache {
+                                                val removeRatio: Float) extends Cache with HitCounterMixin {
 
 
   val removeThreshold: Double = maxEntryNumber.getOrElse(0L) * (1 - removeRatio)

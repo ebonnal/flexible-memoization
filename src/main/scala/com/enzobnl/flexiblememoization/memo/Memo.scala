@@ -2,7 +2,8 @@ package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
 import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
-import com.enzobnl.flexiblememoization.cache.{Cache, CacheBuilder}
+import com.enzobnl.flexiblememoization.cache.CacheBuilder
+import com.enzobnl.flexiblememoization.cache.Cache
 
 import scala.collection.Iterable
 
@@ -16,30 +17,30 @@ class Memo(cache: Cache) extends Memoizer {
 
   def this(cacheBuilder: CacheBuilder) = this(cacheBuilder.build())
 
-  override def apply[I, R](f: I => R): MemoizedFunc with (I => R) = {
-    new MemoizedFunc(cache, Memo.getHashCode(f)) with (I => R) {
+  override def apply[I, R](f: I => R): MemoizedFunction with (I => R) = {
+    new MemoizedFunction(cache, Memo.getHashCode(f)) with (I => R) {
       override def apply(v1: I): R = sharedCache.getOrElseUpdate(Memo.getHashCode(id, v1), f.apply(v1)).asInstanceOf[R]
     }
   }
 
 
-  override def apply[I1, I2, R](f: (I1, I2) => R): MemoizedFunc with ((I1, I2) => R) = {
-    new MemoizedFunc(cache, Memo.getHashCode(f)) with ((I1, I2) => R) {
+  override def apply[I1, I2, R](f: (I1, I2) => R): MemoizedFunction with ((I1, I2) => R) = {
+    new MemoizedFunction(cache, Memo.getHashCode(f)) with ((I1, I2) => R) {
       override def apply(v1: I1, v2: I2): R =
         sharedCache.getOrElseUpdate(Memo.getHashCode(id, v1, v2), f.apply(v1, v2)).asInstanceOf[R]
     }
   }
 
-  override def apply[I1, I2, I3, R](f: (I1, I2, I3) => R): MemoizedFunc with ((I1, I2, I3) => R) = {
-    new MemoizedFunc(cache, Memo.getHashCode(f)) with ((I1, I2, I3) => R) {
+  override def apply[I1, I2, I3, R](f: (I1, I2, I3) => R): MemoizedFunction with ((I1, I2, I3) => R) = {
+    new MemoizedFunction(cache, Memo.getHashCode(f)) with ((I1, I2, I3) => R) {
       override def apply(v1: I1, v2: I2, v3: I3): R =
         sharedCache.getOrElseUpdate(Memo.getHashCode(id, v1, v2), f.apply(v1, v2, v3)).asInstanceOf[R]
 
     }
   }
 
-  override def apply[I, R](f: I => R, trigger: I => Boolean): MemoizedFunc with (I => R) = {
-    new MemoizedFunc(cache, Memo.getHashCode(f)) with (I => R) {
+  override def apply[I, R](f: I => R, trigger: I => Boolean): MemoizedFunction with (I => R) = {
+    new MemoizedFunction(cache, Memo.getHashCode(f)) with (I => R) {
       override def apply(v1: I): R = {
         if (trigger(v1)) sharedCache.getOrElseUpdate(Memo.getHashCode(id, v1), f.apply(v1)).asInstanceOf[R]
         else f.apply(v1)
@@ -47,8 +48,8 @@ class Memo(cache: Cache) extends Memoizer {
     }
   }
 
-  override def apply[I1, I2, R](f: (I1, I2) => R, trigger: (I1, I2) => Boolean): MemoizedFunc with ((I1, I2) => R) = {
-    new MemoizedFunc(cache, Memo.getHashCode(f)) with ((I1, I2) => R) {
+  override def apply[I1, I2, R](f: (I1, I2) => R, trigger: (I1, I2) => Boolean): MemoizedFunction with ((I1, I2) => R) = {
+    new MemoizedFunction(cache, Memo.getHashCode(f)) with ((I1, I2) => R) {
       override def apply(v1: I1, v2: I2): R = {
         if (trigger(v1, v2)) sharedCache.getOrElseUpdate(Memo.getHashCode(id, v1, v2), f.apply(v1, v2)).asInstanceOf[R]
         else f.apply(v1, v2)
@@ -56,8 +57,8 @@ class Memo(cache: Cache) extends Memoizer {
     }
   }
 
-  override def apply[I1, I2, I3, R](f: (I1, I2, I3) => R, trigger: (I1, I2, I3) => Boolean): MemoizedFunc with ((I1, I2, I3) => R) = {
-    new MemoizedFunc(cache, Memo.getHashCode(f)) with ((I1, I2, I3) => R) {
+  override def apply[I1, I2, I3, R](f: (I1, I2, I3) => R, trigger: (I1, I2, I3) => Boolean): MemoizedFunction with ((I1, I2, I3) => R) = {
+    new MemoizedFunction(cache, Memo.getHashCode(f)) with ((I1, I2, I3) => R) {
       override def apply(v1: I1, v2: I2, v3: I3): R = {
         if (trigger(v1, v2, v3)) sharedCache.getOrElseUpdate(Memo.getHashCode(id, v1, v2), f.apply(v1, v2, v3)).asInstanceOf[R]
         else f.apply(v1, v2, v3)
@@ -113,4 +114,12 @@ object Memo {
       case elem => elem.hashCode()
     }).hashCode()
   }
+}
+
+
+object app extends App{
+  val hello = (name: String) => s"Hello $name !"
+  val memoizer = new Memo()
+  val memoizedFunc = memoizer(hello)
+  println(memoizedFunc("Enzo"))
 }

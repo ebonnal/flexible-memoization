@@ -5,7 +5,8 @@ object CacheMode extends Enumeration {
   /**
     * Each node is independent and holds the cache entries it has generated.
     */
-  val LOCAL,
+
+  val LOCAL,  // it is way worth it to use Caffeine instead of LOCAL mode.
 
   /**
     * Every nodes holds a copy of the entire cache: slow on PUT, fast on GET

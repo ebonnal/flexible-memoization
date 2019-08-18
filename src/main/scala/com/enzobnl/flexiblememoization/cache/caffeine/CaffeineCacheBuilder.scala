@@ -1,6 +1,7 @@
 package com.enzobnl.flexiblememoization.cache.caffeine
 
-import com.enzobnl.flexiblememoization.cache.{Cache, CacheBuilder}
+import com.enzobnl.flexiblememoization.cache.CacheBuilder
+import com.enzobnl.flexiblememoization.cache.Cache
 
 /**
   * Design: Functional Builder Pattern allowing fluent customization of caffeine based Cache.

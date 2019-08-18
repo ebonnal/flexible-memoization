@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.enzobnl.flexiblememoization</groupId>
-    <artifactId>flexible-memoization</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>flexible-memoization_2.11</artifactId>
+    <version>0.1.0</version>
     <build>
         <plugins>
             <plugin>

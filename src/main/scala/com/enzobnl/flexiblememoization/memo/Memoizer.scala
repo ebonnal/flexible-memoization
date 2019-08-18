@@ -14,7 +14,7 @@ import com.enzobnl.flexiblememoization.cache.Cache
   * @param sharedCache: cache shared among all the functions memoized by the same Memoizer
   * @param id: unique id corresponding to the non memoized function object
   */
-private[memo] class MemoizedFunc(val sharedCache: Cache, val id: Int) {
+private[flexiblememoization] class MemoizedFunction(val sharedCache: Cache, val id: Int) {
   sharedCache.notifyDependencyStart()
 
   override def finalize(): Unit = sharedCache.notifyDependencyEnd()
@@ -40,16 +40,16 @@ private[memo] class MemoizedFunc(val sharedCache: Cache, val id: Int) {
   */
 trait Memoizer {
 
-  def apply[I, R](f: I => R): MemoizedFunc with (I => R)
+  def apply[I, R](f: I => R): MemoizedFunction with (I => R)
 
-  def apply[I, R](f: I => R, trigger: I => Boolean): MemoizedFunc with (I => R)
+  def apply[I, R](f: I => R, trigger: I => Boolean): MemoizedFunction with (I => R)
 
-  def apply[I1, I2, R](f: (I1, I2) => R): MemoizedFunc with ((I1, I2) => R)
+  def apply[I1, I2, R](f: (I1, I2) => R): MemoizedFunction with ((I1, I2) => R)
 
-  def apply[I1, I2, R](f: (I1, I2) => R, trigger: (I1, I2) => Boolean): MemoizedFunc with ((I1, I2) => R)
+  def apply[I1, I2, R](f: (I1, I2) => R, trigger: (I1, I2) => Boolean): MemoizedFunction with ((I1, I2) => R)
 
-  def apply[I1, I2, I3, R](f: (I1, I2, I3) => R): MemoizedFunc with ((I1, I2, I3) => R)
+  def apply[I1, I2, I3, R](f: (I1, I2, I3) => R): MemoizedFunction with ((I1, I2, I3) => R)
 
-  def apply[I1, I2, I3, R](f: (I1, I2, I3) => R, trigger: (I1, I2, I3) => Boolean): MemoizedFunc with ((I1, I2, I3) => R)
+  def apply[I1, I2, I3, R](f: (I1, I2, I3) => R, trigger: (I1, I2, I3) => Boolean): MemoizedFunction with ((I1, I2, I3) => R)
 
 }
