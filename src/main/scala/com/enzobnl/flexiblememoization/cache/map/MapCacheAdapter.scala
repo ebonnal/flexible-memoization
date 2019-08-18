@@ -1,7 +1,6 @@
 package com.enzobnl.flexiblememoization.cache.map
 
-import com.enzobnl.flexiblememoization.cache.HitCounterMixin
-import com.enzobnl.flexiblememoization.cache.Cache
+import com.enzobnl.flexiblememoization.cache.{Cache, HitCounterMixin}
 import com.enzobnl.flexiblememoization.util.Timeit
 
 import scala.collection.{immutable, mutable}

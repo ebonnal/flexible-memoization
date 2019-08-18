@@ -242,5 +242,11 @@ class MemoSuite extends FlatSpec {
       assert(means(n) < 0.52)
     })
   }
+  "memo on high arity" should "work just fine" in {
+    val iLastCharacters = (i: Int, s: String, ii: Int, si: String, iii: Int, siiii: String, iiiii: Int, siiiiiiii: String) => s.substring(Math.max(0, s.length - i))
+    val m = new Memo()(iLastCharacters, (i: Int, _: String, _: Int, _: String, _: Int, _: String, _: Int, _: String) => i > 1000)
+    assert(m(10, "123456", 10, "123456", 10, "123456", 10, "123456") == "123456")
+    assert(m(1, "123456", 10, "123456", 10, "123456", 10, "123456") == "6")
+  }
 
 }
