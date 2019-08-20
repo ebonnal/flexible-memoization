@@ -421,14 +421,14 @@ object Memo {
     * functions, thus leading to invalid value comparison, at least for Sets and Maps
     * - Function are compared by compilation equality using KeyChain's ClosureHash.hash
     *
-    * @param elems
+    * @param args
     * @tparam I1
     * @tparam I2
     * @tparam R
     * @return
     */
-  def getHashCode[I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, I21, I22, R](elems: Any*): Int = {
-    elems.toSeq.map({
+  def getHashCode[I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, I21, I22, R](args: Any*): Int = {
+    args.toSeq.map({
       case iter: Iterable[_] => iter.hashCode // trait Set[A] extends (A => Boolean)
       case array: Array[_] => array.toSeq.hashCode // Array are compared by reference by default
       case elem: (I1 => R) => ClosureHash.hash(elem).get.hashCode
