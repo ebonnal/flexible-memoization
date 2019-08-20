@@ -1,7 +1,7 @@
 package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
-import com.enzobnl.flexiblememoization.cache.HitCounterMixin
+import com.enzobnl.flexiblememoization.cache.{HitCounterMixin, NotifiableMixin}
 import org.scalatest._
 
 import scala.collection.immutable.SortedSet
@@ -54,6 +54,16 @@ class Hashing extends FlatSpec {
     mf1((i: Int)=> i*2, mutable.LinkedList(1,2), Set(1,2))
     mf2((x: Int)=> x*2, Array(1,2), SortedSet(1,2))
     println(mf1.sharedCache.asInstanceOf[HitCounterMixin].getHitsAndMisses, (1, 1))
+  }
+  "functions memoized with trigger" should "not reuse results if triggers differs" in {
+    val memo = new Memo()
+    val mf1 = memo((i: Int)=> i*2, (i: Int)=> i<10000)
+    val mf2 = memo((i: Int)=> i*2, (i: Int)=> i<10000)
+    val mf3 = memo((i: Int)=> i*2, (i: Int)=> i<1000)
+    mf1(1)
+    mf2(1)
+    mf3(1)
+    assert(memo.cache.asInstanceOf[HitCounterMixin].getHitsAndMisses == (1, 2))
   }
 
 

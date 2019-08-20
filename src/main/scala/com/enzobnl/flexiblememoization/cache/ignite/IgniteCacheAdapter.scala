@@ -37,7 +37,7 @@ private[flexiblememoization] class IgniteCacheAdapter(icf: Option[IgniteConfigur
       }
   }
 
-  lazy val igniteCache: IgniteCache[Int, Any] = ignite.getOrCreateCache[Int, Any](IgniteMemoCacheBuilder.CACHE_NAME)
+  lazy val igniteCache: IgniteCache[Int, Any] = ignite.getOrCreateCache[Int, Any](IgniteCacheBuilder.CACHE_NAME)
 
   override def getOrElseUpdate(key: Int, value: => Any): Any = {
     igniteCache.get(key) match {

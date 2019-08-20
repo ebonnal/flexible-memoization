@@ -1,7 +1,7 @@
 package com.enzobnl.flexiblememoization
 
 import com.enzobnl.flexiblememoization.cache.HitCounterMixin
-import com.enzobnl.flexiblememoization.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.flexiblememoization.cache.ignite.{IgniteCacheBuilder, OnHeapEviction}
 import com.enzobnl.flexiblememoization.cache.map.MapCacheBuilder
 import com.enzobnl.flexiblememoization.memo.Memo
 import org.apache.spark.sql.SparkSession
@@ -11,7 +11,7 @@ class GeneralSuite extends FlatSpec {
   lazy val spark: SparkSession = SparkSession.builder.master("local[*]").appName("def").getOrCreate
   "fibo(20) no memo vs any memo within spark" should "take 21891 vs 21 runs" in {
 
-    val igniteMemo = new Memo(new IgniteMemoCacheBuilder().withOnHeapEviction(OnHeapEviction.LRU))
+    val igniteMemo = new Memo(new IgniteCacheBuilder().withOnHeapEviction(OnHeapEviction.LRU))
     lazy val igniteMemoFibo: Int => Int = igniteMemo {
       case 0 => 1
       case 1 => 1
@@ -57,8 +57,8 @@ class GeneralSuite extends FlatSpec {
     "share their result, especially among jobs" in {
     // this is ok if their is no garbage collection between jobs
 
-    val igniteCache1 = new IgniteMemoCacheBuilder().withOnHeapEviction(OnHeapEviction.LRU).build()
-    val igniteCache2 = new IgniteMemoCacheBuilder().withOnHeapEviction(OnHeapEviction.LRU).build()
+    val igniteCache1 = new IgniteCacheBuilder().withOnHeapEviction(OnHeapEviction.LRU).build()
+    val igniteCache2 = new IgniteCacheBuilder().withOnHeapEviction(OnHeapEviction.LRU).build()
 
 
     val mf1 = new Memo(igniteCache1)((i: Int, j: Int) => i * j)

@@ -2,7 +2,7 @@ package com.enzobnl.flexiblememoization.memo
 
 import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
-import com.enzobnl.flexiblememoization.cache.ignite.{IgniteMemoCacheBuilder, OnHeapEviction}
+import com.enzobnl.flexiblememoization.cache.ignite.{IgniteCacheBuilder, OnHeapEviction}
 import com.enzobnl.flexiblememoization.cache.map.{Eviction, MapCacheBuilder}
 import com.enzobnl.flexiblememoization.util.Timeit
 import org.scalatest._
@@ -15,7 +15,7 @@ class MemoSuite extends FlatSpec {
 
 
   "(defaults, retrieves)" should "(3, 7) then (3, 17)" in {
-    val memoCache = new IgniteMemoCacheBuilder()
+    val memoCache = new IgniteCacheBuilder()
       .withOnHeapEviction(OnHeapEviction.LRU)
       .build()
 
@@ -73,7 +73,7 @@ class MemoSuite extends FlatSpec {
 
   }
   "fibo(20) ignite memo" should "take 21 runs" in {
-    val igniteMemo = new Memo(new IgniteMemoCacheBuilder()
+    val igniteMemo = new Memo(new IgniteCacheBuilder()
       .withOnHeapEviction(OnHeapEviction.LRU)
       .build())
     lazy val igniteMemoFibo: Int => Int = igniteMemo(n => {
@@ -148,7 +148,7 @@ class MemoSuite extends FlatSpec {
       val naiveIsPrime = (i: Int) => (2 to Math.sqrt(i).toInt + 1).dropWhile(i % _ != 0).nonEmpty
       val mapF = new Memo(new MapCacheBuilder().withMaxEntryNumber(maxSize))(naiveIsPrime)
       val caffeineF = new Memo(new CaffeineCacheBuilder().withMaxEntryNumber(maxSize))(naiveIsPrime)
-      val igniteCache = new IgniteMemoCacheBuilder().build()
+      val igniteCache = new IgniteCacheBuilder().build()
       val igniteF = new Memo(igniteCache)(naiveIsPrime)
       val scalazF = scalaz.Memo.mutableHashMapMemo(naiveIsPrime)
       val mapBench = Timeit.get(data.foreach(mapF))

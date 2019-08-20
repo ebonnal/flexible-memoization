@@ -23,12 +23,12 @@ import org.apache.ignite.configuration._
   *                              offHeapMaxSize reached.
   * @param cacheMode: replication behavior
   */
-class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
-                                     offHeapMaxSize: Option[Long],
-                                     offHeapInitialSize: Option[Long],
-                                     onHeapEvictionPolicy: OnHeapEviction,
-                                     offHeapEvictionPolicy: OffHeapEviction,
-                                     cacheMode: CacheMode) extends CacheBuilder {
+class IgniteCacheBuilder private(onHeapMaxSize: Option[Long],
+                                 offHeapMaxSize: Option[Long],
+                                 offHeapInitialSize: Option[Long],
+                                 onHeapEvictionPolicy: OnHeapEviction,
+                                 offHeapEvictionPolicy: OffHeapEviction,
+                                 cacheMode: CacheMode) extends CacheBuilder {
 
   def this() = this(
     None,
@@ -39,8 +39,8 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
     CacheMode.PARTITIONED
   )
 
-  def withOnHeapMaxSize(size: Long): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(
+  def withOnHeapMaxSize(size: Long): IgniteCacheBuilder = {
+    new IgniteCacheBuilder(
       Some(size),
       offHeapMaxSize,
       offHeapInitialSize,
@@ -49,8 +49,8 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
       cacheMode)
   }
 
-  def withOffHeapMaxSize(size: Long): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(
+  def withOffHeapMaxSize(size: Long): IgniteCacheBuilder = {
+    new IgniteCacheBuilder(
       onHeapMaxSize,
       Some(size),
       offHeapInitialSize,
@@ -58,8 +58,8 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
       offHeapEvictionPolicy,
       cacheMode)
   }
-  def withOffHeapInitialSize(size: Long): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(
+  def withOffHeapInitialSize(size: Long): IgniteCacheBuilder = {
+    new IgniteCacheBuilder(
       onHeapMaxSize,
       offHeapMaxSize,
       Some(size),
@@ -68,8 +68,8 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
       cacheMode)
   }
 
-  def withOnHeapEviction(eviction: OnHeapEviction): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(
+  def withOnHeapEviction(eviction: OnHeapEviction): IgniteCacheBuilder = {
+    new IgniteCacheBuilder(
       onHeapMaxSize,
       offHeapMaxSize,
       offHeapInitialSize,
@@ -78,8 +78,8 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
       cacheMode)
   }
 
-  def withOffHeapEviction(eviction: OffHeapEviction): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(
+  def withOffHeapEviction(eviction: OffHeapEviction): IgniteCacheBuilder = {
+    new IgniteCacheBuilder(
       onHeapMaxSize,
       offHeapMaxSize,
       offHeapInitialSize,
@@ -87,8 +87,8 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
       eviction,
       cacheMode)
   }
-  def withCacheMode(mode: CacheMode): IgniteMemoCacheBuilder = {
-    new IgniteMemoCacheBuilder(
+  def withCacheMode(mode: CacheMode): IgniteCacheBuilder = {
+    new IgniteCacheBuilder(
       onHeapMaxSize,
       offHeapMaxSize,
       offHeapInitialSize,
@@ -101,7 +101,7 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
 
     // Creating a new data region.
     val regionCfg = new DataRegionConfiguration()
-      .setName(IgniteMemoCacheBuilder.STORAGE_REGION_NAME)
+      .setName(IgniteCacheBuilder.STORAGE_REGION_NAME)
 
     offHeapInitialSize match {
       case Some(size) => regionCfg.setInitialSize(size) // 500 MB initial size (RAM).
@@ -122,7 +122,7 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
 
     val storageCfg = new DataStorageConfiguration().setDataRegionConfigurations(regionCfg)
 
-    val cacheConfig: CacheConfiguration[Long, Any] = new CacheConfiguration(IgniteMemoCacheBuilder.CACHE_NAME)
+    val cacheConfig: CacheConfiguration[Long, Any] = new CacheConfiguration(IgniteCacheBuilder.CACHE_NAME)
       .setOnheapCacheEnabled(true) // on heap cache backed by off-heap + eviction
 
     cacheMode match {
@@ -159,7 +159,7 @@ class IgniteMemoCacheBuilder private(onHeapMaxSize: Option[Long],
   }
 }
 
-object IgniteMemoCacheBuilder {
+object IgniteCacheBuilder {
   val CACHE_NAME = "MemoizationCache" // always same name to have a sharing among cluster
   val STORAGE_REGION_NAME = s"MemoizationStorageRegion"
 }
