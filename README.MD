@@ -1,5 +1,18 @@
-# memoization-toolbox
-Toolbox with intuitive API making memoization of arbitrary deterministic functions straight forward.
+# Flexible-memoization
+A Scala memoization library whose goals are to:
 
-- Different degrees of *scalability*: from **local** use cases to big data jobs **on clusters** (powered by [Apache Ignite](https://github.com/apache/ignite)).
-- Different degrees of *tunability*: from **ready to use** adaptative cache eviction policies (powered by [Caffeine](https://github.com/ben-manes/caffeine)) to **bundled or user defined specific ones**.
+- Be simple to use and to extend.
+- Handle any function.
+- Treat objects equality by value and content as much as possible.
+- Provide built-in cache management options fetching the majority of the needs, from medium size use cases needing a versatile eviction policy to cluster wide use cases needing to scale.
+
+## Powered by
+- [Apache Ignite](https://github.com/apache/ignite))
+- [Caffeine](https://github.com/ben-manes/caffeine))
+- [KeyChain](https://github.com/craiig/keychain-tools/tree/master/udf-hash)
+
+## Build
+
+## Use
+
+## Contribute
