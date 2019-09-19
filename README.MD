@@ -11,7 +11,7 @@ A *Scala* memoization library whose goals are to:
 - [Caffeine](https://github.com/ben-manes/caffeine)
 - [KeyChain](https://github.com/craiig/keychain-tools/tree/master/udf-hash)
 
-*Extract from [here](https://enzobnl.github.com/masterthesis.html):*
+*Extract from [here](https://enzobnl.github.io/masterthesis.html):*
 
 ## 3.2. Usage overview
 This section will briefly explain how one can use *flexible-memoization*.  
