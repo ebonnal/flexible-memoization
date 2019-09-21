@@ -1,7 +1,7 @@
-package com.enzobnl.scalablememoizer.ignite.cache
+package com.enzobnl.flexiblememoization.cache.ignite
 
-object OnHeapEvictionPolicy extends Enumeration {
-  type OnHeapEvictionPolicy = Value
+object OnHeapEviction extends Enumeration {
+  type OnHeapEviction = Value
   /**
     * Evicts least recently used entry
     */
@@ -17,3 +17,4 @@ object OnHeapEvictionPolicy extends Enumeration {
     */
   SORTED = Value
 }
+

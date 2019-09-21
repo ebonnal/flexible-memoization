@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.enzobnl.scalablememoizer</groupId>
-    <artifactId>scalablememoizer</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.enzobnl.flexiblememoization</groupId>
+    <artifactId>flexible-memoization_2.11</artifactId>
+    <version>0.1.0</version>
     <build>
         <plugins>
             <plugin>
@@ -27,40 +27,6 @@
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
                 <version>2.0.0</version>
-<!--                &lt;!&ndash; Note config is repeated in surefire config &ndash;&gt;-->
-<!--                <configuration>-->
-<!--                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>-->
-<!--                    <junitxml>.</junitxml>-->
-<!--                    <filereports>SparkTestSuite.txt</filereports>-->
-<!--                    <argLine>-ea -Xmx4g -Xss4m -XX:ReservedCodeCacheSize=${CodeCacheSize}</argLine>-->
-<!--                    <stderr/>-->
-<!--                    <environmentVariables>-->
-<!--                        &lt;!&ndash;-->
-<!--                          Setting SPARK_DIST_CLASSPATH is a simple way to make sure any child processes-->
-<!--                          launched by the tests have access to the correct test-time classpath.-->
-<!--                        &ndash;&gt;-->
-<!--                        <SPARK_DIST_CLASSPATH>${test_classpath}</SPARK_DIST_CLASSPATH>-->
-<!--                        <SPARK_PREPEND_CLASSES>1</SPARK_PREPEND_CLASSES>-->
-<!--                        <SPARK_SCALA_VERSION>${scala.binary.version}</SPARK_SCALA_VERSION>-->
-<!--                        <SPARK_TESTING>1</SPARK_TESTING>-->
-<!--                        <JAVA_HOME>${test.java.home}</JAVA_HOME>-->
-<!--                    </environmentVariables>-->
-<!--                    <systemProperties>-->
-<!--                        <log4j.configuration>file:src/test/resources/log4j.properties</log4j.configuration>-->
-<!--                        <derby.system.durability>test</derby.system.durability>-->
-<!--                        <java.awt.headless>true</java.awt.headless>-->
-<!--                        <java.io.tmpdir>${project.build.directory}/tmp</java.io.tmpdir>-->
-<!--                        <spark.test.home>${spark.test.home}</spark.test.home>-->
-<!--                        <spark.testing>1</spark.testing>-->
-<!--                        <spark.ui.enabled>false</spark.ui.enabled>-->
-<!--                        <spark.ui.showConsoleProgress>false</spark.ui.showConsoleProgress>-->
-<!--                        <spark.unsafe.exceptionOnMemoryLeak>true</spark.unsafe.exceptionOnMemoryLeak>-->
-<!--                        &lt;!&ndash; Needed by sql/hive tests. &ndash;&gt;-->
-<!--                        <test.src.tables>__not_used__</test.src.tables>-->
-<!--                    </systemProperties>-->
-<!--                    <tagsToExclude>${test.exclude.tags}</tagsToExclude>-->
-<!--                    <tagsToInclude>${test.include.tags}</tagsToInclude>-->
-<!--                </configuration>-->
                 <executions>
                     <execution>
                         <id>test</id>
@@ -73,6 +39,22 @@
 
         </plugins>
     </build>
+
+    <properties>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <encoding>UTF-8</encoding>
+        <scala.version>2.11.5</scala.version>
+        <scala.compat.version>2.11</scala.compat.version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <slf4j.version>1.7.16</slf4j.version>
+        <log4j.version>1.2.17</log4j.version>
+        <commons-codec.version>1.10</commons-codec.version>
+        <commons-io.version>2.4</commons-io.version>
+
+        <hadoop.deps.scope>compile</hadoop.deps.scope>
+    </properties>
+
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
@@ -138,6 +120,60 @@
             <artifactId>scalaz-core_2.11</artifactId>
             <version>7.3.0-M30</version>
         </dependency>
+
+
+<!--        <dependency>-->
+<!--            <groupId>ca.ubc.ece.systems</groupId>-->
+<!--            <artifactId>udf-hash</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>${hadoop.deps.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+            <scope>${hadoop.deps.scope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-jackson_${scala.binary.version}</artifactId>
+            <version>3.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-util</artifactId>
+            <version>5.0.4</version>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-core_${scala.compat.version}</artifactId>
+            <version>2.4.16</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-junit_${scala.compat.version}</artifactId>
+            <version>2.4.16</version>
+        </dependency>
+
 
     </dependencies>
 

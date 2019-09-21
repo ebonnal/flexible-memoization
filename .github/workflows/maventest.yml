@@ -1,4 +1,4 @@
-name: build
+name: test
 
 on: [push]
 
@@ -13,5 +13,5 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build with Maven
-      run: mvn compile --file pom.xml
+    - name: Build and test with Maven
+      run: mvn compile test --file pom.xml
