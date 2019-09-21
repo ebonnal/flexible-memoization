@@ -1,6 +1,5 @@
 # Flexible-memoization
 [![Actions Status](https://github.com/enzobnl/flexible-memoization/workflows/build/badge.svg)](https://github.com/enzobnl/flexible-memoization/actions)
-[![Actions Status](https://github.com/enzobnl/flexible-memoization/workflows/test/badge.svg)](https://github.com/enzobnl/flexible-memoization/actions)
 
 A *Scala* memoization library whose goals are to:
 
