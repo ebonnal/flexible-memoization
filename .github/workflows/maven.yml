@@ -5,11 +5,13 @@ on:
     branches:
       - master
     # file paths to consider in the event. Optional; defaults to all.
-    #paths:
-    #  - 'src/**'
+#    paths:
+#      - 'src/**'
+#      - 'pom.xml'
+
 
 jobs:
-  build:
+  build-test:
 
     runs-on: ubuntu-latest
 
