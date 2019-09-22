@@ -8,7 +8,9 @@ on:
 #    paths:
 #      - 'src/**'
 #      - 'pom.xml'
-
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-test:
