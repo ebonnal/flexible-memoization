@@ -90,7 +90,7 @@ The trick is to leverage Scala's lazy value declarations.
 
 As a support for the following explanations, here is a UML diagram summarizing the relations between *flexible-memoization*'s abstractions:
 
-![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/UML.png)
+![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/figs/UML.png)
 
 ### 3.3.2. Core abstractions
 *Flexible-memoization* core abstractions intend to:
@@ -233,5 +233,5 @@ spark.sql("""SELECT col2, sum(mf(col1)), avg(mf(col1)) FROM
 
 Here is what happens behind the scene, for a Spark job run in *Client Mode*:
 
-![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/igniteflowdiagram.png)
+![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/figs/igniteflowdiagram.png)
 

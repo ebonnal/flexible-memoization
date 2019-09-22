@@ -7,6 +7,20 @@
     <groupId>com.enzobnl.flexiblememoization</groupId>
     <artifactId>flexible-memoization_2.11</artifactId>
     <version>0.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Flexible-Memoization</name>
+    <description>A Scala memoization library whose goals are to be simple, be generic and fetch the majority of the needs</description>
+    <url>https://github.com/EnzoBnl/flexible-memoization</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <build>
         <plugins>
             <plugin>
