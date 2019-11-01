@@ -2,11 +2,17 @@ name: test
 
 on:
   push:
-    paths: "src/*"
+    paths:
+      - "src/*"
+      - ".github/workflows/*"
+
   pull_request:
     branches:
       master
-    paths: "src/*"
+    paths: 
+      - "src/*"
+      - ".github/workflows/*"
+      
 
 jobs:
   build-test:
