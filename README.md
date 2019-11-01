@@ -20,23 +20,27 @@ This section will briefly explain how one can use *flexible-memoization*.
 
 ### 3.2.1. Build
 We start with declaration of the dependency in our project build tool:
-- Using *Maven*: 
-
+Using *Maven*, first add spark-packages repository host:
+```xml
+<repositories>  
+  [...]
+  <repository>
+    <id>spark-packages</id>  
+    <url>http://dl.bintray.com/spark-packages/maven/</url>  
+  </repository>
+</repositories>
 ```
-<dependency>  
-  <groupId>com.enzobnl.flexiblememoization</groupId>  
-  <artifactId>flexible-memoization_2.11</artifactId>  
-  <version>0.1.0</version> 
-</dependency>
-```
+and the flexible-memoization dependency
 
-- Using *SBT*:
-
-```
-libraryDependencies += 
-  "com.enzobnl.flexiblememoization" 
-  % "flexible-memoization_2.11" 
-  % "0.1.0"
+```xml
+<dependencies>
+  [...]
+  <dependency>  
+    <groupId>com.enzobnl</groupId>  
+    <artifactId>flexible-memoization</artifactId>  
+    <version>1.0.0-ignite2.7.5-s_2.11</version>
+  </dependency>
+</dependencies>
 ```
 
 ### 3.2.2. Hello example
