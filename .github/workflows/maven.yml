@@ -1,7 +1,12 @@
 name: test
 
 on:
-  [push, pull_request]
+  push:
+    paths: "src/*"
+  pull_request:
+    branches:
+      master
+    paths: "src/*"
 
 jobs:
   build-test:
