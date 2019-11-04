@@ -19,18 +19,7 @@ A *Scala* memoization library whose goals are to:
 This section will briefly explain how one can use *flexible-memoization*.  
 
 ### 3.2.1. Build
-We start with declaration of the dependency in our project build tool:
-Using *Maven*, first add spark-packages repository host:
-```xml
-<repositories>  
-  [...]
-  <repository>
-    <id>spark-packages</id>  
-    <url>http://dl.bintray.com/spark-packages/maven/</url>  
-  </repository>
-</repositories>
-```
-and the flexible-memoization dependency
+
 
 ```xml
 <dependencies>
@@ -238,4 +227,3 @@ spark.sql("""SELECT col2, sum(mf(col1)), avg(mf(col1)) FROM
 Here is what happens behind the scene, for a Spark job run in *Client Mode*:
 
 ![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/figs/igniteflowdiagram.png)
-
