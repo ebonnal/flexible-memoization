@@ -18,8 +18,7 @@ A *Scala* memoization library whose goals are to:
 ## 3.2. Usage overview
 This section will briefly explain how one can use *flexible-memoization*.  
 
-### 3.2.1. Build
-
+### 3.2.1. Build (coming soon)
 
 ```xml
 <dependencies>
