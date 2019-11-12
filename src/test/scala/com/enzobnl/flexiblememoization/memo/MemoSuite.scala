@@ -1,9 +1,9 @@
 package com.enzobnl.flexiblememoization.memo
 
 import com.enzobnl.flexiblememoization.cache.HitCounterMixin
-import com.enzobnl.flexiblememoization.cache.caffeine.CaffeineCacheBuilder
-import com.enzobnl.flexiblememoization.cache.ignite.{IgniteCacheBuilder, OnHeapEviction}
-import com.enzobnl.flexiblememoization.cache.map.{Eviction, MapCacheBuilder}
+import com.enzobnl.flexiblememoization.cache.impl.caffeine.CaffeineCacheBuilder
+import com.enzobnl.flexiblememoization.cache.impl.ignite.{IgniteCacheBuilder, OnHeapEviction}
+import com.enzobnl.flexiblememoization.cache.impl.map.{Eviction, MapCacheBuilder}
 import com.enzobnl.flexiblememoization.util.Timeit
 import org.scalatest._
 import scalaz.Memo.mutableHashMapMemo

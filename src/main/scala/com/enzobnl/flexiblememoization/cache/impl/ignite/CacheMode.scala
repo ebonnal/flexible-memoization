@@ -1,4 +1,4 @@
-package com.enzobnl.flexiblememoization.cache.ignite
+package com.enzobnl.flexiblememoization.cache.impl.ignite
 
 object CacheMode extends Enumeration {
   type CacheMode = Value

@@ -1,4 +1,4 @@
-package com.enzobnl.flexiblememoization.cache.map
+package com.enzobnl.flexiblememoization.cache.impl.map
 
 import Eviction.Eviction
 import com.enzobnl.flexiblememoization.cache.CacheBuilder

@@ -1,7 +1,7 @@
 package com.enzobnl.flexiblememoization.cache
 
 /**
-  * Mimic the usefull getOrElseUpdate method from mutable.Map
+  * Mimic the useful getOrElseUpdate method from mutable.Map
   */
 trait Gettable {
   def getOrElseUpdate(key: Int, value: => Any): Any

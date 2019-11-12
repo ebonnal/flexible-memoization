@@ -1,10 +1,10 @@
-package com.enzobnl.flexiblememoization.cache.ignite
+package com.enzobnl.flexiblememoization.cache.impl.ignite
 
 import com.enzobnl.flexiblememoization.cache.CacheBuilder
 import com.enzobnl.flexiblememoization.cache.Cache
-import com.enzobnl.flexiblememoization.cache.ignite.CacheMode.CacheMode
-import com.enzobnl.flexiblememoization.cache.ignite.OffHeapEviction.OffHeapEviction
-import com.enzobnl.flexiblememoization.cache.ignite.OnHeapEviction.OnHeapEviction
+import com.enzobnl.flexiblememoization.cache.impl.ignite.CacheMode.CacheMode
+import com.enzobnl.flexiblememoization.cache.impl.ignite.OffHeapEviction.OffHeapEviction
+import com.enzobnl.flexiblememoization.cache.impl.ignite.OnHeapEviction.OnHeapEviction
 import org.apache.ignite.cache.eviction.fifo.FifoEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.lru.LruEvictionPolicyFactory
 import org.apache.ignite.cache.eviction.sorted.SortedEvictionPolicyFactory

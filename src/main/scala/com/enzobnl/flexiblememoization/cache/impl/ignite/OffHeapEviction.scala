@@ -1,4 +1,4 @@
-package com.enzobnl.flexiblememoization.cache.ignite
+package com.enzobnl.flexiblememoization.cache.impl.ignite
 
 object OffHeapEviction extends Enumeration {
   type OffHeapEviction = Value

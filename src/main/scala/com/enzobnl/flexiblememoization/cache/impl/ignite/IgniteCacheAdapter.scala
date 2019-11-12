@@ -1,4 +1,4 @@
-package com.enzobnl.flexiblememoization.cache.ignite
+package com.enzobnl.flexiblememoization.cache.impl.ignite
 
 import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import com.enzobnl.flexiblememoization.cache.Cache

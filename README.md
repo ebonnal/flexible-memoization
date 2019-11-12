@@ -43,7 +43,7 @@ libraryDependencies +=
 1. Import Memo class
 
 ```scala
-import com.enzobnl.flexiblememoization.memo.Memo
+
 ```
 
 2. Create your memoizer
