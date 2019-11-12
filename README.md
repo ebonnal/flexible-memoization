@@ -36,7 +36,7 @@ This section will briefly explain how one can use *flexible-memoization*.
 1. Import Memo class
 
 ```scala
-import com.enzobnl.flexiblememoization.memo.Memo
+import com.enzobnl.flexiblememoization.memo.impl.Memo
 ```
 
 2. Create your memoizer
@@ -144,7 +144,7 @@ This feature aims at letting user chose to only leverage caching when it worth i
 It is a subject in the *Observer Pattern* formed with `NotifiableMixin`: When a `MemoizedFunction` is created it notifies its `Cache` attribute and when it is *garbage collected*, it also informs it. This last notification is done in the `finalyze()` method that is the method that the *garbage collector* calls on each object just before it cleans them. This notification system allows caches to close themselves if needed, when no more memoized functions depends on them.
 
 ### 3.3.3. Provided implementation
-Of course in addition to these abstractions definitions, *flexible-memoization* comes with built-in implementations of each of them.
+One can find built-in implementations of previous abstractions, in `com.enzobnl.flexiblememoization.memo.impl` and `com.enzobnl.flexiblememoization.cache.impl`. The next section will introduce them.
 
 #### 3.3.3.1. Memo
 `Memo` is the concrete implementation of the `Memoizer` trait. We have already encountered it in the *usage overview* section.

@@ -1,4 +1,4 @@
-package com.enzobnl.flexiblememoization.cache.caffeine
+package com.enzobnl.flexiblememoization.cache.impl.caffeine
 
 import com.enzobnl.flexiblememoization.cache.CacheBuilder
 import com.enzobnl.flexiblememoization.cache.Cache

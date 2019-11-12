@@ -1,4 +1,4 @@
-package com.enzobnl.flexiblememoization.cache.map
+package com.enzobnl.flexiblememoization.cache.impl.map
 
 import com.enzobnl.flexiblememoization.cache.{Cache, HitCounterMixin}
 import com.enzobnl.flexiblememoization.util.Timeit

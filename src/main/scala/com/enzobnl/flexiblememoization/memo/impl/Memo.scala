@@ -1,9 +1,10 @@
-package com.enzobnl.flexiblememoization.memo
+package com.enzobnl.flexiblememoization.memo.impl
 
 import ca.ubc.ece.systems.ClosureHash
-import com.enzobnl.flexiblememoization.cache.caffeine.{CaffeineCacheAdapter, CaffeineCacheBuilder}
+import com.enzobnl.flexiblememoization.cache.impl.caffeine.{CaffeineCacheAdapter, CaffeineCacheBuilder}
 import com.enzobnl.flexiblememoization.cache.{Cache, CacheBuilder, HitCounterMixin, NotifiableMixin}
-import com.enzobnl.flexiblememoization.cache.ignite.{IgniteCacheAdapter, IgniteCacheBuilder, OnHeapEviction}
+import com.enzobnl.flexiblememoization.cache.impl.ignite.{IgniteCacheAdapter, IgniteCacheBuilder, OnHeapEviction}
+import com.enzobnl.flexiblememoization.memo.{MemoizedFunction, Memoizer}
 
 import scala.collection.Iterable
 

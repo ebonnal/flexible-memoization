@@ -1,6 +1,6 @@
 package com.enzobnl.flexiblememoization.cache
 
-import com.enzobnl.flexiblememoization.cache.map.{CostEvictorMapCacheAdapter, Eviction, FIFOEvictorMapCacheAdapter, LRUEvictorMapCacheAdapter, MapCacheBuilder}
+import com.enzobnl.flexiblememoization.cache.impl.map.{CostEvictorMapCacheAdapter, Eviction, FIFOEvictorMapCacheAdapter, LRUEvictorMapCacheAdapter, MapCacheBuilder}
 import org.scalatest.FlatSpec
 
 
