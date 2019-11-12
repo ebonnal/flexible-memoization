@@ -1,5 +1,5 @@
 # Flexible-memoization
-[![Actions Status](https://github.com/enzobnl/flexible-memoization/workflows/build-test/badge.svg)](https://github.com/enzobnl/flexible-memoization/actions)
+[![Actions Status](https://github.com/enzobnl/flexible-memoization/workflows/test/badge.svg)](https://github.com/enzobnl/flexible-memoization/actions)
 
 A *Scala* memoization library whose goals are to:
 
@@ -19,24 +19,17 @@ A *Scala* memoization library whose goals are to:
 This section will briefly explain how one can use *flexible-memoization*.  
 
 ### 3.2.1. Build
-We start with declaration of the dependency in our project build tool:
-- Using *Maven*: 
 
-```
-<dependency>  
-  <groupId>com.enzobnl.flexiblememoization</groupId>  
-  <artifactId>flexible-memoization_2.11</artifactId>  
-  <version>0.1.0</version> 
-</dependency>
-```
 
-- Using *SBT*:
-
-```
-libraryDependencies += 
-  "com.enzobnl.flexiblememoization" 
-  % "flexible-memoization_2.11" 
-  % "0.1.0"
+```xml
+<dependencies>
+  [...]
+  <dependency>  
+    <groupId>com.enzobnl</groupId>  
+    <artifactId>flexible-memoization</artifactId>  
+    <version>1.0.0-ignite2.7.5-s_2.11</version>
+  </dependency>
+</dependencies>
 ```
 
 ### 3.2.2. Hello example
@@ -234,4 +227,3 @@ spark.sql("""SELECT col2, sum(mf(col1)), avg(mf(col1)) FROM
 Here is what happens behind the scene, for a Spark job run in *Client Mode*:
 
 ![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/figs/igniteflowdiagram.png)
-
