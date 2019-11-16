@@ -2,6 +2,7 @@ package com.enzobnl.flexiblememoization.memo
 
 import ca.ubc.ece.systems.ClosureHash
 import com.enzobnl.flexiblememoization.cache.{HitCounterMixin, NotifiableMixin}
+import com.enzobnl.flexiblememoization.memo.impl.Memo
 import org.scalatest._
 
 import scala.collection.immutable.SortedSet
