@@ -3,7 +3,7 @@ package com.enzobnl.flexiblememoization
 import com.enzobnl.flexiblememoization.cache.HitCounterMixin
 import com.enzobnl.flexiblememoization.cache.impl.ignite.{IgniteCacheBuilder, OnHeapEviction}
 import com.enzobnl.flexiblememoization.cache.impl.map.MapCacheBuilder
-import com.enzobnl.flexiblememoization.memo.Memo
+import com.enzobnl.flexiblememoization.memo.impl.Memo
 import org.apache.spark.sql.SparkSession
 import org.scalatest.FlatSpec
 
