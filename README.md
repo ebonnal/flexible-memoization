@@ -18,18 +18,22 @@ A *Scala* memoization library whose goals are to:
 ## 3.2. Usage overview
 This section will briefly explain how one can use *flexible-memoization*.  
 
-### 3.2.1. Build (coming soon)
+### 3.2.1. Install
+*Flexible-memoization* is [packaged as a *GitHub Maven package*](https://github.com/EnzoBnl/flexible-memoization/packages). You can use it through the following dependency in your `pom.xml`:
 
-```xml
-<dependencies>
-  [...]
-  <dependency>  
-    <groupId>com.enzobnl</groupId>  
-    <artifactId>flexible-memoization</artifactId>  
-    <version>1.0.0-ignite2.7.5-s_2.11</version>
+```xml  
+<dependencies>  
+  [...] 
+  <dependency>   
+    <groupId>com.enzobnl</groupId>    
+    <artifactId>flexible-memoization</artifactId>    
+    <version>1.0.1-ignite2.7.5-s_2.11</version>     
   </dependency>
-</dependencies>
-```
+</dependencies>  
+```  
+
+Check out the [documentation about installing a *GitHub Maven package*](https://help.github.com/en/github/managing-packages-with-github-packages/configuring-apache-maven-for-use-with-github-packages#installing-a-package).
+
 
 ### 3.2.2. Hello example
 1. Import Memo class
