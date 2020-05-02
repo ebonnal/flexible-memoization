@@ -3,15 +3,13 @@ name: deploy-package
 on:
   push:
     paths:
-      - "src/*"
-      - ".github/workflows/*"
+      - "pom.xml"
 
   pull_request:
     branches:
       master
     paths:
-      - "src/*"
-      - ".github/workflows/*"
+      - "pom.xml"
 
 
 jobs:
