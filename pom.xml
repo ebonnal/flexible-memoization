@@ -7,7 +7,7 @@
     <groupId>com.enzobnl</groupId>
     <artifactId>flexible-memoization</artifactId>
     <!--Error 422 in deploy means that version need to be updated-->
-    <version>1.0.3-ignite2.7.5-s_2.11</version>
+    <version>1.0.4-ignite2.7.5-s_2.11</version>
     <packaging>jar</packaging>
 
     <name>flexible-memoization</name>
@@ -116,7 +116,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -129,7 +128,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
