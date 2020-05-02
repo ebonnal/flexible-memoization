@@ -6,7 +6,8 @@
 
     <groupId>com.enzobnl</groupId>
     <artifactId>flexible-memoization</artifactId>
-    <version>1.0.2-ignite2.7.5-s_2.11</version>
+    <!--Error 422 in deploy means that version need to be updated-->
+    <version>1.0.3-ignite2.7.5-s_2.11</version>
     <packaging>jar</packaging>
 
     <name>flexible-memoization</name>

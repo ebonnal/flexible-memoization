@@ -21,16 +21,49 @@ This section will briefly explain how one can use *flexible-memoization*.
 ### 3.2.1. Install
 *Flexible-memoization* is [packaged as a *GitHub Maven package*](https://github.com/EnzoBnl/flexible-memoization/packages). You can use it through the following dependency in your `pom.xml`:
 
-```xml  
-<dependencies>  
-  [...] 
-  <dependency>   
-    <groupId>com.enzobnl</groupId>    
-    <artifactId>flexible-memoization</artifactId>    
-    <version>1.0.1-ignite2.7.5-s_2.11</version>     
-  </dependency>
-</dependencies>  
+```xml
+<project ...>
+    ...
+    <dependencies>  
+      [...] 
+      <dependency>   
+        <groupId>com.enzobnl</groupId>    
+        <artifactId>flexible-memoization</artifactId>    
+        <version>1.0.3-ignite2.7.5-s_2.11</version>     
+      </dependency>
+    ...
+    </dependencies> 
+    ... 
+    <repositories>
+        ...
+        <repository>
+            <id>github-enzobnl</id>
+            <url>https://maven.pkg.github.com/enzobnl/flexible-memoization</url>
+        </repository>
+    </repositories>
+    ...
+</project>
 ```  
+
+And in your `/path/to/.m2/settings.xml`
+
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    ...
+    <servers>
+        ...
+        <server>
+              <id>github-enzobnl</id>
+              <username>YOUR_GITHUB_USERNAME</username>
+              <password>YOUR_GITHUB_TOKEN</password>
+        </server>
+  </servers>
+</settings>
+```
 
 Check out the [documentation about installing a *GitHub Maven package*](https://help.github.com/en/github/managing-packages-with-github-packages/configuring-apache-maven-for-use-with-github-packages#installing-a-package).
 
