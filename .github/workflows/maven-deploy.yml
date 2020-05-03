@@ -1,17 +1,9 @@
 name: deploy-package
 
 on:
-  push:
-    paths:
-      - "pom.xml"
-      - ".github/workflows/*"
-
-  pull_request:
-    branches:
-      master
-    paths:
-      - "pom.xml"
-      - ".github/workflows/*"
+  release:
+    types:
+      - created
 
 jobs:
   build-deploy:
