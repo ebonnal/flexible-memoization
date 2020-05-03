@@ -14,7 +14,7 @@ on:
       - ".github/workflows/*"
 
 jobs:
-  build-test-deploy:
+  build-deploy:
 
     runs-on: ubuntu-latest
 
