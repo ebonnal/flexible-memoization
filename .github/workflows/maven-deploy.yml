@@ -4,13 +4,14 @@ on:
   push:
     paths:
       - "pom.xml"
+      - ".github/workflows/*"
 
   pull_request:
     branches:
       master
     paths:
       - "pom.xml"
-
+      - ".github/workflows/*"
 
 jobs:
   build-test-deploy:
