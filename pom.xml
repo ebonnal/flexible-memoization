@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.enzobnl</groupId>
+    <groupId>com.bonnalenzo</groupId>
     <artifactId>flexible-memoization</artifactId>
     <!--Error 422 in deploy means that version need to be updated-->
     <version>1.0.6-ignite2.7.5-s_2.11</version>
@@ -12,20 +12,20 @@
 
     <name>flexible-memoization</name>
     <description>A Scala memoization library whose goals are to be simple and generic</description>
-    <url>https://github.com/EnzoBnl/flexible-memoization</url>
+    <url>https://github.com/bonnal-enzo/flexible-memoization</url>
 
     <developers>
         <developer>
             <name>Enzo Bonnal</name>
             <email>enzobonnal@gmail.com</email>
-            <url>https://enzobnl.github.io</url>
+            <url>https://bonnal-enzo.github.io</url>
         </developer>
     </developers>
 
     <scm>
-        <url>https://github.com/EnzoBnl/flexible-memoization</url>
-        <connection>scm:git:git@github.com:enzobnl/flexible-memoization.git</connection>
-        <developerConnection>scm:git:git@github.com:enzobnl/flexible-memoization.git</developerConnection>
+        <url>https://github.com/bonnal-enzo/flexible-memoization</url>
+        <connection>scm:git:git@github.com:bonnal-enzo/flexible-memoization.git</connection>
+        <developerConnection>scm:git:git@github.com:bonnal-enzo/flexible-memoization.git</developerConnection>
     </scm>
 
 
@@ -82,19 +82,19 @@
     <profiles>
         <profile>
             <id>release</id>
-            <!--mvn deploy -Dregistry=https://maven.pkg.github.com/EnzoBnl -Prelease -DskipTests -Dmaven.wagon.http.pool=false-->
+            <!--mvn deploy -Dregistry=https://maven.pkg.github.com/bonnal-enzo -Prelease -DskipTests -Dmaven.wagon.http.pool=false-->
             <distributionManagement>
                 <repository>
                     <id>github</id>
-                    <name>enzobnl</name>
-                    <url>https://maven.pkg.github.com/enzobnl/flexible-memoization</url>
+                    <name>bonnal-enzo</name>
+                    <url>https://maven.pkg.github.com/bonnal-enzo/flexible-memoization</url>
                 </repository>
             </distributionManagement>
             <repositories>
                 <repository>
                     <id>github</id>
-                    <name>enzobnl</name>
-                    <url>https://maven.pkg.github.com/enzobnl/flexible-memoization</url>
+                    <name>bonnal-enzo</name>
+                    <url>https://maven.pkg.github.com/bonnal-enzo/flexible-memoization</url>
                 </repository>
             </repositories>
             <build>
