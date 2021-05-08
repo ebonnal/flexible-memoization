@@ -1,5 +1,5 @@
 # Flexible-memoization
-[![Actions Status](https://github.com/enzobnl/flexible-memoization/workflows/unit-tests/badge.svg)](https://github.com/enzobnl/flexible-memoization/actions) [![Actions Status](https://github.com/enzobnl/flexible-memoization/workflows/deploy-package/badge.svg)](https://github.com/enzobnl/flexible-memoization/actions)
+[![Actions Status](https://github.com/bonnal-enzo/flexible-memoization/workflows/unit-tests/badge.svg)](https://github.com/bonnal-enzo/flexible-memoization/actions) [![Actions Status](https://github.com/bonnal-enzo/flexible-memoization/workflows/deploy-package/badge.svg)](https://github.com/bonnal-enzo/flexible-memoization/actions)
 
 A *Scala* memoization library whose goals are to:
 
@@ -13,13 +13,13 @@ A *Scala* memoization library whose goals are to:
 - [Caffeine](https://github.com/ben-manes/caffeine)
 - [KeyChain](https://github.com/craiig/keychain-tools/tree/master/udf-hash)
 
-*Extract from [master thesis](https://enzobnl.github.io/masterthesis.html):*
+*Extract from [master thesis](https://bonnal-enzo.github.io/masterthesis.html):*
 
 ## 3.2. Usage overview
 This section will briefly explain how one can use *flexible-memoization*.  
 
 ### 3.2.1. Install
-*Flexible-memoization* is [packaged as a *GitHub Maven package*](https://github.com/EnzoBnl/flexible-memoization/packages). You can use it through the following dependency in your `pom.xml`:
+*Flexible-memoization* is [packaged as a *GitHub Maven package*](https://github.com/bonnal-enzo/flexible-memoization/packages). You can use it through the following dependency in your `pom.xml`:
 
 ```xml
 <project ...>
@@ -27,7 +27,7 @@ This section will briefly explain how one can use *flexible-memoization*.
     <dependencies>  
       [...] 
       <dependency>   
-        <groupId>com.enzobnl</groupId>    
+        <groupId>com.bonnalenzo</groupId>    
         <artifactId>flexible-memoization</artifactId>    
         <version>1.0.3-ignite2.7.5-s_2.11</version>     
       </dependency>
@@ -37,8 +37,8 @@ This section will briefly explain how one can use *flexible-memoization*.
     <repositories>
         ...
         <repository>
-            <id>github-enzobnl</id>
-            <url>https://maven.pkg.github.com/enzobnl/flexible-memoization</url>
+            <id>github-bonnal-enzo</id>
+            <url>https://maven.pkg.github.com/bonnal-enzo/flexible-memoization</url>
         </repository>
     </repositories>
     ...
@@ -56,7 +56,7 @@ And in your `/path/to/.m2/settings.xml`
     <servers>
         ...
         <server>
-              <id>github-enzobnl</id>
+              <id>github-bonnal-enzo</id>
               <username>YOUR_GITHUB_USERNAME</username>
               <password>YOUR_GITHUB_TOKEN</password>
         </server>
@@ -71,7 +71,7 @@ Check out the [documentation about installing a *GitHub Maven package*](https://
 1. Import Memo class
 
 ```scala
-import com.enzobnl.flexiblememoization.memo.impl.Memo
+import com.bonnalenzo.flexiblememoization.memo.impl.Memo
 ```
 
 2. Create your memoizer
@@ -118,7 +118,7 @@ The trick is to leverage Scala's lazy value declarations.
 
 As a support for the following explanations, here is a UML diagram summarizing the relations between *flexible-memoization*'s abstractions:
 
-![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/figs/UML.png)
+![enter image description here](https://raw.githubusercontent.com/bonnal-enzo/flexible-memoization/master/figs/UML.png)
 
 ### 3.3.2. Core abstractions
 *Flexible-memoization* core abstractions intend to:
@@ -179,7 +179,7 @@ This feature aims at letting user chose to only leverage caching when it worth i
 It is a subject in the *Observer Pattern* formed with `NotifiableMixin`: When a `MemoizedFunction` is created it notifies its `Cache` attribute and when it is *garbage collected*, it also informs it. This last notification is done in the `finalyze()` method that is the method that the *garbage collector* calls on each object just before it cleans them. This notification system allows caches to close themselves if needed, when no more memoized functions depends on them.
 
 ### 3.3.3. Provided implementation
-One can find built-in implementations of previous abstractions, in `com.enzobnl.flexiblememoization.memo.impl` and `com.enzobnl.flexiblememoization.cache.impl`. The next section will introduce them.
+One can find built-in implementations of previous abstractions, in `com.bonnalenzo.flexiblememoization.memo.impl` and `com.bonnalenzo.flexiblememoization.cache.impl`. The next section will introduce them.
 
 #### 3.3.3.1. Memo
 `Memo` is the concrete implementation of the `Memoizer` trait. We have already encountered it in the *usage overview* section.
@@ -261,4 +261,4 @@ spark.sql("""SELECT col2, sum(mf(col1)), avg(mf(col1)) FROM
 
 Here is what happens behind the scene, for a Spark job run in *Client Mode*:
 
-![enter image description here](https://raw.githubusercontent.com/EnzoBnl/flexible-memoization/master/figs/igniteflowdiagram.png)
+![enter image description here](https://raw.githubusercontent.com/bonnal-enzo/flexible-memoization/master/figs/igniteflowdiagram.png)
