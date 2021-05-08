@@ -4,7 +4,7 @@
 A *Scala* memoization library whose goals are to:
 
 - Be **simple** to use and to extend.
-- Handle **any function**.
+- Handle **any function** signature.
 - Treat objects **equality by value** and content as much as possible.
 - Provide built-in cache management options **fetching the majority of the needs**, from medium size use cases needing a versatile eviction policy to cluster wide use cases needing to scale.
 
