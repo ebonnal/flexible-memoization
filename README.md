@@ -1,5 +1,5 @@
 # Flexible-memoization
-[![Actions Status](https://github.com/bonnal-enzo/flexible-memoization/workflows/unit-tests/badge.svg)](https://github.com/bonnal-enzo/flexible-memoization/actions) [![Actions Status](https://github.com/bonnal-enzo/flexible-memoization/workflows/deploy-package/badge.svg)](https://github.com/bonnal-enzo/flexible-memoization/actions)
+[![Actions Status](https://github.com/ebonnal/flexible-memoization/workflows/unit-tests/badge.svg)](https://github.com/ebonnal/flexible-memoization/actions) [![Actions Status](https://github.com/ebonnal/flexible-memoization/workflows/deploy-package/badge.svg)](https://github.com/ebonnal/flexible-memoization/actions)
 
 A *Scala* memoization library whose goals are to:
 
